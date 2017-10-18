@@ -16,7 +16,6 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private var gFamilyIsNeeded:Bool = false
     private var pgFamilyIsNeeded:Bool = false
 
-    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
 
     @IBOutlet weak var stateInfoView: UILabel!
@@ -53,7 +52,6 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        titleLabel.text = self.title
         selectedGifs = result
 
         let width = UIScreen.main.bounds.width
@@ -98,5 +96,4 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }))
         self.present(alert,animated: true, completion: nil)
     }
-
 }

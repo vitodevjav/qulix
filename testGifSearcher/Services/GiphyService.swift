@@ -7,8 +7,6 @@ class GiphyService {
     private let keyApi = "oTZ3TChX3NjlHPtzKLCvLIuETVsEpp5q"
     private let gifsCountToReturn = 1000
 
-
-
     private func parseJsonToGifArray(_ JSON:[String:Any])->[GifModel]{
         var gifArray:[GifModel]=[]
 

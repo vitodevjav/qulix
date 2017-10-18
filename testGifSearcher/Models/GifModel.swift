@@ -10,5 +10,4 @@ class GifModel {
         self.trended = trended
         self.family = family
     }
-    
 }
