@@ -4,8 +4,6 @@ import SDWebImage
 
 class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
 
-    private let oopsWarningMessageString = "There are no results"
-    private let warningTitleString = "Sorry.."
 
     private var gifsOnScreenCount = 50
 
@@ -60,7 +58,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if selectedGifs.count == 0 { createAlert(title: self.warningTitleString , message: self.oopsWarningMessageString)}
+        if selectedGifs.count == 0 { createAlert(title: NSLocalizedString("WarningTitle", comment: ""), message: NSLocalizedString("WarningMessage", comment: ""))}
 
         if gifsOnScreenCount > selectedGifs.count {
             return selectedGifs.count
@@ -91,7 +89,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
     private func createAlert(title: String, message: String){
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.default, handler: { (action) in
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Close", comment: ""), style: UIAlertActionStyle.default, handler: { (action) in
             alert.dismiss(animated: true, completion: nil)
         }))
         self.present(alert,animated: true, completion: nil)
