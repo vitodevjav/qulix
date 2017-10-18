@@ -7,7 +7,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private let oopsWarningMessageString = "There are no results"
     private let warningTitleString = "Sorry.."
 
-    private var gifsOnScreenCount = 50
+    private var gifsOnScreenCount = 20
 
     var result: [GifModel] = []
     private var selectedGifs:[GifModel] = []
@@ -16,11 +16,9 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private var gFamilyIsNeeded:Bool = false
     private var pgFamilyIsNeeded:Bool = false
     
-    private var refreshControl = UIRefreshControl()
-     var loadMoreStatus = false
 
     @IBOutlet weak var tableView: UITableView!
-
+   
     @IBOutlet weak var stateInfoView: UILabel!
     @IBAction func pgCheckBoxStatusIsChanged(_ sender: Any) {
         pgFamilyIsNeeded = !pgFamilyIsNeeded
@@ -57,10 +55,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         super.viewDidLoad()
         selectedGifs = result
 
-        refreshControl.attributedTitle = NSAttributedString(string: NSLocalizedString("Loading", comment: ""))
-        refreshControl.addTarget(self, action: #selector(refresh(sender:)), for: UIControlEvents.valueChanged)
-        tableView.addSubview(refreshControl)
-        self.tableView.tableFooterView?.isHidden = true
+        self.tableView.tableFooterView?.isHidden = false
         
         let width = UIScreen.main.bounds.width
         tableView.rowHeight = width*0.7
@@ -91,25 +86,13 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         let deltaOffset = maximumOffset - currentOffset
         
-        if deltaOffset <= 0 {
-            self.gifsOnScreenCount += 50
+        if deltaOffset <= 100 {
+            self.gifsOnScreenCount += 20
             tableView.reloadData()
+           
         }
     }
     
-    @objc func refresh(sender:AnyObject) {
-        refreshBegin(newtext: "Refresh",
-                     refreshEnd: {(x:Int) -> () in
-                        self.tableView.reloadData()
-                        self.refreshControl.endRefreshing()
-        })
-    }
-    
-    func refreshBegin(newtext:String, refreshEnd: @escaping (Int) -> ()) {
-        DispatchQueue.global().async {
-            refreshEnd(0)
-        }
-    }
 
     private func createAlert(title: String, message: String){
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)

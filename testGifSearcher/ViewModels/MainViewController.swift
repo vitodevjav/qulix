@@ -48,7 +48,6 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         if isSuccess {
             trendingGifs = result
             self.tableView.reloadData()
-                debugPrint("======================loaded=======================================================")
             activityIndicator.isHidden = true
             searchBar.isHidden = false
             stateInfoView.isHidden = true
