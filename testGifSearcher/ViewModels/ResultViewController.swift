@@ -15,6 +15,9 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private var yFamilyIsNeeded:Bool = false
     private var gFamilyIsNeeded:Bool = false
     private var pgFamilyIsNeeded:Bool = false
+    
+    private var refreshControl = UIRefreshControl()
+     var loadMoreStatus = false
 
     @IBOutlet weak var tableView: UITableView!
 
@@ -54,6 +57,11 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         super.viewDidLoad()
         selectedGifs = result
 
+        refreshControl.attributedTitle = NSAttributedString(string: NSLocalizedString("Loading", comment: ""))
+        refreshControl.addTarget(self, action: #selector(refresh(sender:)), for: UIControlEvents.valueChanged)
+        tableView.addSubview(refreshControl)
+        self.tableView.tableFooterView?.isHidden = true
+        
         let width = UIScreen.main.bounds.width
         tableView.rowHeight = width*0.7
         tableView.reloadData()
@@ -86,6 +94,20 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         if deltaOffset <= 0 {
             self.gifsOnScreenCount += 50
             tableView.reloadData()
+        }
+    }
+    
+    @objc func refresh(sender:AnyObject) {
+        refreshBegin(newtext: "Refresh",
+                     refreshEnd: {(x:Int) -> () in
+                        self.tableView.reloadData()
+                        self.refreshControl.endRefreshing()
+        })
+    }
+    
+    func refreshBegin(newtext:String, refreshEnd: @escaping (Int) -> ()) {
+        DispatchQueue.global().async {
+            refreshEnd(0)
         }
     }
 

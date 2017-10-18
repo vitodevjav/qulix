@@ -19,10 +19,16 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     private var gifsOnScreenCount = 50;
     private var trendingGifs: [GifModel] = []
     private var searchResult: [GifModel] = []
+    
+    private var refreshControl = UIRefreshControl()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        refreshControl.attributedTitle = NSAttributedString(string: NSLocalizedString("Loading", comment: ""))
+        refreshControl.addTarget(self, action: #selector(refresh(sender:)), for: UIControlEvents.valueChanged)
+        tableView.addSubview(refreshControl)
+        
         stateInfoView.text = "Loading..."
         stateInfoView.isHidden = false
 
@@ -42,7 +48,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         if isSuccess {
             trendingGifs = result
             self.tableView.reloadData()
-
+                debugPrint("======================loaded=======================================================")
             activityIndicator.isHidden = true
             searchBar.isHidden = false
             stateInfoView.isHidden = true
@@ -93,7 +99,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         let currentOffset = scrollView.contentOffset.y
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         let deltaOffset = maximumOffset - currentOffset
-
+        
         if deltaOffset <= 0 {
             if self.gifsOnScreenCount < self.trendingGifs.count{
                 self.gifsOnScreenCount += 50
@@ -101,6 +107,22 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
             }else {
                 createAlert(title: self.warningTitleString, message: self.endWarningMessageString)
             }
+        }
+    }
+    
+    @objc func refresh(sender:AnyObject) {
+        refreshBegin(newtext: "Refresh",
+                     refreshEnd: {(x:Int) -> () in
+                        self.tableView.reloadData()
+                        self.refreshControl.endRefreshing()
+        })
+    }
+    
+    func refreshBegin(newtext:String, refreshEnd: @escaping (Int) -> ()) {
+        DispatchQueue.global().async {
+            self.giphyService.returnTrendingGifs(completion: {(isSuccess:Bool, result:[GifModel])in
+                self.gifsAreLoadedCompletionHandler(isSuccess,result)})
+                refreshEnd(0)
         }
     }
 
