@@ -1,0 +1,13 @@
+/* 
+  Localisable.strings
+  testGifSearcher
+
+  Created by Kazakevich, Vitaly on 10/18/17.
+  Copyright © 2017 Vitalik. All rights reserved.
+*/
+
+"WarningMessage" = "There are some problems. Try other request or check your internet connection.";
+"WarningTitle" = "Sorry...";
+"NoMoreResult" = "There are no more result";
+"Close" = "Close";
+"Loadign" = "Loading";
