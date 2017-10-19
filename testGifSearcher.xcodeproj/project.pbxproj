@@ -24,6 +24,8 @@
 		010B34B32B330E2EBB4AFD87 /* Pods_testGifSearcher.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_testGifSearcher.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3487AE44CB9965BC8D231E35 /* Pods-testGifSearcher.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-testGifSearcher.release.xcconfig"; path = "Pods/Target Support Files/Pods-testGifSearcher/Pods-testGifSearcher.release.xcconfig"; sourceTree = "<group>"; };
 		4214EB7C7A44FA8446C155C0 /* Pods-testGifSearcher.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-testGifSearcher.debug.xcconfig"; path = "Pods/Target Support Files/Pods-testGifSearcher/Pods-testGifSearcher.debug.xcconfig"; sourceTree = "<group>"; };
+		75C9B50E1F977F6C003FCD53 /* Localisable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localisable.strings; path = ../../../../../Desktop/Localisable.strings; sourceTree = "<group>"; };
+		75C9B50F1F977F71003FCD53 /* Localisable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localisable.strings; path = ../../../../Desktop/Localisable.strings; sourceTree = "<group>"; };
 		85C21BC81F866B5A0056CA9E /* ResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultViewController.swift; sourceTree = "<group>"; };
 		85C21BED1F88FA8D0056CA9E /* CheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
 		85F98F6B1F8621290052A3F0 /* testGifSearcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = testGifSearcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -104,6 +106,7 @@
 		85C21BEF1F8968380056CA9E /* UIElements */ = {
 			isa = PBXGroup;
 			children = (
+				75C9B50E1F977F6C003FCD53 /* Localisable.strings */,
 				85C21BED1F88FA8D0056CA9E /* CheckBox.swift */,
 				85F98F801F8625920052A3F0 /* GifTableViewCell.swift */,
 			);
@@ -131,6 +134,7 @@
 		85F98F6D1F8621290052A3F0 /* testGifSearcher */ = {
 			isa = PBXGroup;
 			children = (
+				75C9B50F1F977F71003FCD53 /* Localisable.strings */,
 				8549800C1F8AB01800C1E797 /* Views */,
 				85C21BC31F86543B0056CA9E /* ViewModels */,
 				85C21BE91F87744E0056CA9E /* Services */,
@@ -357,7 +361,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -408,7 +412,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";

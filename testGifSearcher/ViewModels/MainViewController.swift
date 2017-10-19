@@ -5,9 +5,6 @@ import SDWebImage
 class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource{
 
     private let searchSegueIdentifier = "searchSegue"
-    private let oopsWarningMessageString = "There are some problems. Try other request or check your internet connection."
-    private let warningTitleString = "Sorry.."
-    private let endWarningMessageString = "No more results."
 
     private let giphyService = GiphyService()
 
@@ -23,19 +20,14 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        stateInfoView.text = "Loading..."
+        stateInfoView.text = NSLocalizedString("Loading", comment: "")
         stateInfoView.isHidden = false
 
+        giphyService.returnTrendingGifs(completion: {(isSuccess:Bool, result:[GifModel])in
+            self.gifsAreLoadedCompletionHandler(isSuccess,result)})
+        
         let width = UIScreen.main.bounds.width
         tableView.rowHeight = width*0.7
-
-        if NetworkReachabilityManager()!.isReachable {
-            giphyService.returnTrendingGifs(completion: {(isSuccess:Bool, result:[GifModel])in
-                self.gifsAreLoadedCompletionHandler(isSuccess,result)})
-        }else{
-            stateInfoView.text = "No internet connection"
-            activityIndicator.isHidden = true
-        }
     }
 
     private func gifsAreLoadedCompletionHandler(_ isSuccess:Bool,_ result:[GifModel]){
@@ -48,7 +40,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
             stateInfoView.isHidden = true
             tableView.isHidden = false
         }else {
-            self.createAlert(title: self.warningTitleString, message: self.oopsWarningMessageString)
+            self.createAlert(title: NSLocalizedString("WarningTitle", comment: ""), message: NSLocalizedString("WarningMessage", comment: ""))
         }
     }
 
@@ -60,7 +52,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         activityIndicator.isHidden = false
-        stateInfoView.text = "Loading..."
+        stateInfoView.text = NSLocalizedString("Loading", comment: "")
         stateInfoView.isHidden = false
         tableView.isHidden = true
 
@@ -68,7 +60,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
                                         self.searchResult = result;
                                         if isSuccess {
                                             self.performSegue(withIdentifier:self.searchSegueIdentifier, sender: self)
-                                        }else {self.createAlert(title : self.warningTitleString, message: self.oopsWarningMessageString)}
+                                        }else {self.createAlert(title: NSLocalizedString("WarningTitle", comment: ""), message: NSLocalizedString("WarningMessage", comment: ""))}
         })
     }
 
@@ -99,7 +91,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
                 self.gifsOnScreenCount += 50
                 tableView.reloadData()
             }else {
-                createAlert(title: self.warningTitleString, message: self.endWarningMessageString)
+                createAlert(title: NSLocalizedString("WarningTitle", comment: ""), message: NSLocalizedString("WarningMessage", comment: ""))
             }
         }
     }
@@ -107,7 +99,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     private func createAlert(title: String, message: String){
 
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.default, handler: { (action) in
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Close", comment: ""), style: UIAlertActionStyle.default, handler: { (action) in
             alert.dismiss(animated: true, completion: nil)
                 self.tableView.isHidden = false
                 self.stateInfoView.isHidden = true
