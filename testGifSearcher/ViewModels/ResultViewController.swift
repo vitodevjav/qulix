@@ -15,10 +15,12 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private var yFamilyIsNeeded:Bool = false
     private var gFamilyIsNeeded:Bool = false
     private var pgFamilyIsNeeded:Bool = false
-    
+    private var loadStatus = false
 
     @IBOutlet weak var tableView: UITableView!
    
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var loadMoreView: UIView!
     @IBOutlet weak var stateInfoView: UILabel!
     @IBAction func pgCheckBoxStatusIsChanged(_ sender: Any) {
         pgFamilyIsNeeded = !pgFamilyIsNeeded
@@ -55,6 +57,11 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         super.viewDidLoad()
         selectedGifs = result
 
+        loadMoreView.isHidden = true
+        activityIndicator.isHidden = true
+        stateInfoView.isHidden = true
+        stateInfoView.text = NSLocalizedString("Loading", comment: "")
+        
         self.tableView.tableFooterView?.isHidden = false
         
         let width = UIScreen.main.bounds.width
@@ -81,15 +88,37 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return cell
     }
 
+    func gifsDidLoadOntoScreen(){
+        DispatchQueue.main.async{
+            self.loadStatus = false
+            self.activityIndicator.stopAnimating()
+            self.loadMoreView.isHidden = true
+            self.tableView.reloadData()
+        }
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let currentOffset = scrollView.contentOffset.y
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         let deltaOffset = maximumOffset - currentOffset
         
-        if deltaOffset <= 100 {
+        if deltaOffset <= -10 && !loadStatus {
+            loadStatus = true
+            loadMoreView.isHidden = false
+            activityIndicator.isHidden = false
+            stateInfoView.isHidden =  false
+            activityIndicator.startAnimating()
+            loadmore(completion: {() in
+                self.gifsDidLoadOntoScreen()
+            })
+        }
+    }
+    
+    func loadmore(completion: @escaping ()->()){
+        DispatchQueue.global().async {
+            sleep(1)
             self.gifsOnScreenCount += 20
-            tableView.reloadData()
-           
+            completion()
         }
     }
     

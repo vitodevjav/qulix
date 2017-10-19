@@ -9,6 +9,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     private let warningTitleString = "Sorry.."
     private let endWarningMessageString = "No more results."
 
+    @IBOutlet weak var loadMoreView: UIView!
     private let giphyService = GiphyService()
 
     @IBOutlet weak var stateInfoView: UILabel!
@@ -16,12 +17,19 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
-    private var gifsOnScreenCount = 50;
+    private var gifsOnScreenCount = 20;
     private var trendingGifs: [GifModel] = []
     private var searchResult: [GifModel] = []
     
+    private var loadStatus = false
     private var refreshControl = UIRefreshControl()
 
+    override func viewWillAppear(_ animated: Bool) {
+        tableView.isHidden = false
+        stateInfoView.isHidden = true
+        activityIndicator.isHidden = true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -99,13 +107,35 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         let deltaOffset = maximumOffset - currentOffset
         
-        if deltaOffset <= 0 {
-            if self.gifsOnScreenCount < self.trendingGifs.count{
-                self.gifsOnScreenCount += 50
-                tableView.reloadData()
-            }else {
-                createAlert(title: self.warningTitleString, message: self.endWarningMessageString)
+        if deltaOffset <= -10 {
+            guard self.gifsOnScreenCount < self.trendingGifs.count else{
+                self.createAlert(title: self.warningTitleString, message: self.endWarningMessageString)
+                return
             }
+            if !loadStatus {
+                loadStatus = true
+                loadMoreView.isHidden = false
+                stateInfoView.isHidden =  false
+                loadmore(completion: {() in
+                    self.gifsDidLoadOntoScreen()
+                })
+            }
+        }
+    }
+    
+    func loadmore(completion: @escaping ()->()){
+        DispatchQueue.global().async {
+            sleep(2)
+            self.gifsOnScreenCount += 20
+            completion()
+        }
+    }
+    
+    func gifsDidLoadOntoScreen(){
+        DispatchQueue.main.async{
+            self.loadStatus = false
+            self.loadMoreView.isHidden = true
+            self.tableView.reloadData()
         }
     }
     
