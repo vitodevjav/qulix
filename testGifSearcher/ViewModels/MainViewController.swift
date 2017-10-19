@@ -13,7 +13,9 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
-    private var gifsOnScreenCount = 50;
+    private var loadStatus = false
+    private var gifsOnScreenCount = 50
+    private var trendedGifsOffset = 0
     private var trendingGifs: [GifModel] = []
     private var searchResult: [GifModel] = []
 
@@ -33,8 +35,8 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     private func gifsAreLoadedCompletionHandler(_ isSuccess:Bool,_ result:[GifModel]){
         if isSuccess {
             trendingGifs = result
-            self.tableView.reloadData()
-
+            tableView.reloadData()
+            
             activityIndicator.isHidden = true
             searchBar.isHidden = false
             stateInfoView.isHidden = true
@@ -44,6 +46,16 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         }
     }
 
+    func getNextGifsFromServer(){
+        gifsOnScreenCount += 50
+        tableView.reloadData()
+        giphyService.returnTrendingGifs(completion: {(isSuccess:Bool, result:[GifModel])in
+            self.trendingGifs += result
+            self.loadStatus = false
+            self.tableView.reloadData()
+        })
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destination = segue.destination as! ResultViewController
         destination.result = searchResult
@@ -65,16 +77,13 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if gifsOnScreenCount > trendingGifs.count {
-            return trendingGifs.count
-        }else {
-            return gifsOnScreenCount
-        }
+        return gifsOnScreenCount > trendingGifs.count ? trendingGifs.count : gifsOnScreenCount
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! GifTableViewCell
 
+        
         cell.gifView.sd_setImage(with: URL(string: trendingGifs[indexPath.row].url)!, placeholderImage: UIImage(named: "ImagePlaceHolder"))
         if (trendingGifs[indexPath.row].trended) {cell.starImageView.image = UIImage(named: "trendedImage")}
 
@@ -86,10 +95,12 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         let deltaOffset = maximumOffset - currentOffset
 
-        if deltaOffset <= 0 {
+        if deltaOffset <= 10 && !loadStatus{
             if self.gifsOnScreenCount < self.trendingGifs.count{
                 self.gifsOnScreenCount += 50
-                tableView.reloadData()
+                //loadStatus = true
+                //getNextGifsFromServer()
+               tableView.reloadData()
             }else {
                 createAlert(title: NSLocalizedString("WarningTitle", comment: ""), message: NSLocalizedString("WarningMessage", comment: ""))
             }

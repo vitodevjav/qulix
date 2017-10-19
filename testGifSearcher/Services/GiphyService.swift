@@ -5,7 +5,8 @@ import Alamofire
 class GiphyService {
 
     private let keyApi = "oTZ3TChX3NjlHPtzKLCvLIuETVsEpp5q"
-    private let gifsCountToReturn = 1000
+    private let gifsCountToReturn = 50
+    private var trendedGifsOffset = 0
 
     private func parseJsonToGifArray(_ JSON:[String:Any])->[GifModel]{
         var gifArray:[GifModel]=[]
@@ -27,14 +28,18 @@ class GiphyService {
 
     public func returnTrendingGifs(completion:@escaping(Bool,[GifModel]) -> Void){
         var gifArray:[GifModel]=[]
-        let urlString = "https://api.giphy.com/v1/gifs/trending?api_key=\(keyApi)&limit=\(self.gifsCountToReturn)"
+        let urlString = "https://api.giphy.com/v1/gifs/trending?api_key=\(keyApi)&limit=\(self.gifsCountToReturn)&offset=\(self.trendedGifsOffset)"
         
         Alamofire.request(urlString, method: .get, parameters: nil,encoding: JSONEncoding.default)
             .responseJSON { response in
                 gifArray  = self.parseJsonToGifArray(response.result.value as! [String: Any])
-                if gifArray.count > 0 {completion(true,gifArray)}
+                if gifArray.count > 0 {
+                    completion(true,gifArray)
+                    self.trendedGifsOffset += self.gifsCountToReturn
+                }
                 else{ completion(false,gifArray)}
             }
+        
     }
 
     public func searchGifsByName(_ name:String, completion:@escaping(Bool,[GifModel]) -> Void){
@@ -51,5 +56,7 @@ class GiphyService {
                 if gifArray.count > 0 {completion(true,gifArray)}
                 else{ completion(false,gifArray)}
         }
+        
+        
     }
 }
