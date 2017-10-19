@@ -1,18 +1,8 @@
-# Created by https://www.gitignore.io/api/swift
-
-### Swift ###
-# Xcode
-
-## Build generated
 build/
 DerivedData/
 
-## Obj-C/Swift specific
 *.DS_Store
 *.xcworkspace
 *xcuserdata/
 
-# CocoaPods - Refactored to standalone file
 Pods
-
-# End of https://www.gitignore.io/api/swift
