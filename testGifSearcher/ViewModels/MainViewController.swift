@@ -4,9 +4,9 @@ import SDWebImage
 
 class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource{
 
-    private let searchSegueIdentifier = "searchSegue"
+    private let segueToResultView = "segueToResultView"
 
-    @IBOutlet weak var loadMoreView: UIView!
+    @IBOutlet weak var gifsLoadingStatusView: UIView!
     private let giphyService = GiphyService()
 
     @IBOutlet weak var stateInfoView: UILabel!
@@ -85,7 +85,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         giphyService.searchGifsByName(searchBar.text!, completion: {(isSuccess,result:[GifModel]) in
             self.searchResult = result;
             if isSuccess {
-                self.performSegue(withIdentifier:self.searchSegueIdentifier, sender: self)
+                self.performSegue(withIdentifier:self.segueToResultView, sender: self)
             }else {self.createAlert(title: NSLocalizedString("WarningTitle", comment: ""), message: NSLocalizedString("WarningMessage", comment: ""))}
         })
     }
@@ -109,14 +109,14 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
 
     private func gifsWillLoad(){
         loadStatus = true
-        loadMoreView.isHidden = false
+        gifsLoadingStatusView.isHidden = false
         stateInfoView.isHidden =  false
     }
 
     private func gifsDidLoad(){
         DispatchQueue.main.async{
             self.loadStatus = false
-            self.loadMoreView.isHidden = true
+            self.gifsLoadingStatusView.isHidden = true
             self.tableView.reloadData()
         }
     }

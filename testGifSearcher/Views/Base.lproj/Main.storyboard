@@ -133,7 +133,7 @@
                         <outlet property="searchBar" destination="OK8-cm-orM" id="kpA-sy-hjh"/>
                         <outlet property="stateInfoView" destination="9cU-Lg-88Q" id="jz6-xJ-6TE"/>
                         <outlet property="tableView" destination="M5D-Nk-Fp2" id="q8l-Lh-141"/>
-                        <segue destination="wzh-Ll-IdW" kind="show" identifier="searchSegue" id="WdR-51-jfL"/>
+                        <segue destination="wzh-Ll-IdW" kind="show" identifier="segueToResultView" id="WdR-51-jfL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
