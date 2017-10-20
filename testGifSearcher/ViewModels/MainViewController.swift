@@ -22,6 +22,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     private var refreshControl = UIRefreshControl()
 
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         tableView.isHidden = false
         stateInfoView.isHidden = true
         activityIndicator.isHidden = true
@@ -118,7 +119,6 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     
     func loadmore(completion: @escaping ()->()){
         DispatchQueue.global().async {
-            sleep(2)
             self.gifsOnScreenCount += 20
             completion()
         }

@@ -114,7 +114,6 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func loadmore(completion: @escaping ()->()){
         DispatchQueue.global().async {
-            sleep(1)
             self.gifsOnScreenCount += 20
             completion()
         }
