@@ -23,9 +23,9 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let localisedString = NSLocalizedString("Loading", comment: "")
+        let loadingString = NSLocalizedString("Loading", comment: "")
 
-        refreshControl.attributedTitle = NSAttributedString(string: localisedString)
+        refreshControl.attributedTitle = NSAttributedString(string: loadingString)
         refreshControl.addTarget(self, action: #selector(refresh(sender:)), for: UIControlEvents.valueChanged)
         tableView.addSubview(refreshControl)
 
@@ -128,7 +128,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
             completion()
         }
     }
-    
+
     @objc private func refresh(sender:AnyObject) {
         refreshBegin(newtext: "Refresh",
                      refreshEnd: {() -> () in
@@ -136,7 +136,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
                         self.refreshControl.endRefreshing()
         })
     }
-    
+
     private func refreshBegin(newtext:String, refreshEnd: @escaping () -> Void) {
         DispatchQueue.global().async {
             self.giphyService.returnTrendingGifs(completion: {(isSuccess:Bool, result:[GifModel])in
@@ -153,18 +153,11 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         }))
         self.present(alert,animated: true, completion: nil)
     }
-    
+
     private func turnHiddenViewModeOn (_ isHidden: Bool) {
-        if isHidden {
-            stateInfoView.isHidden = false
-            tableView.isHidden = true
-            activityIndicator.isHidden = false
-        }else{
-            tableView.isHidden = false
-            stateInfoView.isHidden = true
-            activityIndicator.isHidden = true
-            searchBar.isHidden = false
-        }
+            stateInfoView.isHidden = !isHidden
+            tableView.isHidden = isHidden
+            activityIndicator.isHidden = !isHidden
     }
 }
 

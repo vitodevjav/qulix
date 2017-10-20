@@ -15,10 +15,10 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private var loadStatus = false
 
     @IBOutlet weak var tableView: UITableView!
-   
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var loadMoreView: UIView!
     @IBOutlet weak var stateInfoView: UILabel!
+    
     @IBAction func pgCheckBoxStatusIsChanged(_ sender: Any) {
         pgFamilyIsNeeded = !pgFamilyIsNeeded
         selectGifs()
@@ -96,7 +96,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
             completion()
         }
     }
-    
+
     private func createAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: NSLocalizedString("Close", comment: ""), style: UIAlertActionStyle.default, handler: { (action) in
@@ -120,16 +120,10 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
         tableView.reloadData()
     }
-    
+
     private func turnLoadingViewModeOn(_ isLoading: Bool) {
-        if isLoading {
-            loadMoreView.isHidden = false
-            activityIndicator.isHidden = false
-            stateInfoView.isHidden =  false
-        }else{
-            loadMoreView.isHidden = true
-            activityIndicator.isHidden = true
-            stateInfoView.isHidden = true
-        }
+			loadMoreView.isHidden = !isLoading
+            activityIndicator.isHidden = !isLoading
+            stateInfoView.isHidden =  !isLoading
     }
 }
