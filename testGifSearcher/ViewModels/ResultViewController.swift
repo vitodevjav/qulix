@@ -33,35 +33,13 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         gFamilyIsNeeded = !gFamilyIsNeeded
         selectGifs()
     }
-
-    private func selectGifs() {
-        selectedGifs.removeAll()
-        for gif in result{
-            if gFamilyIsNeeded && gif.family == "g"{
-                selectedGifs.append(gif)
-            }
-            if yFamilyIsNeeded && gif.family == "y"{
-                selectedGifs.append(gif)
-            }
-            if pgFamilyIsNeeded && gif.family == "pg"{
-                selectedGifs.append(gif)
-            }
-        }
-        tableView.reloadData()
-    }
     
-    func prepareView(){
-        loadMoreView.isHidden = true
-        activityIndicator.isHidden = true
-        stateInfoView.isHidden = true
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
         selectedGifs = result
         
-        prepareView()
+        turnLoadingViewModeOn(false)
         stateInfoView.text = NSLocalizedString("Loading", comment: "")
         let width = UIScreen.main.bounds.width
         tableView.rowHeight = width*0.7
@@ -87,21 +65,6 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
         return cell
     }
-
-    func gifsDidLoad(){
-        DispatchQueue.main.async{
-            self.loadStatus = false
-            self.activityIndicator.stopAnimating()
-            self.loadMoreView.isHidden = true
-            self.tableView.reloadData()
-        }
-    }
-    
-    func prepareViewForLoadingGifs(){
-        loadMoreView.isHidden = false
-        activityIndicator.isHidden = false
-        stateInfoView.isHidden =  false
-    }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let currentOffset = scrollView.contentOffset.y
@@ -110,27 +73,63 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         if deltaOffset <= -10 && !loadStatus {
             loadStatus = true
-            prepareViewForLoadingGifs()
+            turnLoadingViewModeOn(true)
             activityIndicator.startAnimating()
             loadMore(){
                 self.gifsDidLoad()
             }
         }
     }
+
+    private func gifsDidLoad() {
+        DispatchQueue.main.async{
+            self.loadStatus = false
+            self.activityIndicator.stopAnimating()
+            self.loadMoreView.isHidden = true
+            self.tableView.reloadData()
+        }
+    }
     
-    func loadMore(completion: @escaping ()->()){
+    private func loadMore(completion: @escaping ()->Void) {
         DispatchQueue.global().async {
             self.gifsOnScreenCount += 20
             completion()
         }
     }
     
-
-    private func createAlert(title: String, message: String){
+    private func createAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: NSLocalizedString("Close", comment: ""), style: UIAlertActionStyle.default, handler: { (action) in
             alert.dismiss(animated: true, completion: nil)
         }))
         self.present(alert,animated: true, completion: nil)
+    }
+    
+    private func selectGifs() {
+        selectedGifs.removeAll()
+        for gif in result{
+            if gFamilyIsNeeded && gif.family == "g"{
+                selectedGifs.append(gif)
+            }
+            if yFamilyIsNeeded && gif.family == "y"{
+                selectedGifs.append(gif)
+            }
+            if pgFamilyIsNeeded && gif.family == "pg"{
+                selectedGifs.append(gif)
+            }
+        }
+        tableView.reloadData()
+    }
+    
+    private func turnLoadingViewModeOn(_ isLoading: Bool) {
+        if isLoading {
+            loadMoreView.isHidden = false
+            activityIndicator.isHidden = false
+            stateInfoView.isHidden =  false
+        }else{
+            loadMoreView.isHidden = true
+            activityIndicator.isHidden = true
+            stateInfoView.isHidden = true
+        }
     }
 }

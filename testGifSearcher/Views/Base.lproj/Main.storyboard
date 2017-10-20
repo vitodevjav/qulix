@@ -40,7 +40,7 @@
                                 <rect key="frame" x="16" y="126" width="343" height="541"/>
                                 <color key="backgroundColor" red="0.66422420739999999" green="0.66424006219999998" blue="0.66423153879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="sectionIndexBackgroundColor" red="0.66422420739999999" green="0.66424006219999998" blue="0.66423153879999997" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
-                                <view key="tableFooterView" contentMode="scaleToFill" id="BFX-2n-qcS">
+                                <view key="tableFooterView" hidden="YES" contentMode="scaleToFill" id="BFX-2n-qcS">
                                     <rect key="frame" x="0.0" y="228" width="343" height="44"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
