@@ -5,10 +5,8 @@ import SDWebImage
 class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
 
     private var gifsOnScreenCount = 20
-
     var result: [GifModel] = []
     private var selectedGifs:[GifModel] = []
-
     private var yFamilyIsNeeded:Bool = false
     private var gFamilyIsNeeded:Bool = false
     private var pgFamilyIsNeeded:Bool = false
@@ -18,7 +16,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var loadMoreView: UIView!
     @IBOutlet weak var stateInfoView: UILabel!
-    
+
     @IBAction func pgCheckBoxStatusIsChanged(_ sender: Any) {
         pgFamilyIsNeeded = !pgFamilyIsNeeded
         selectGifs()
@@ -33,17 +31,15 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         gFamilyIsNeeded = !gFamilyIsNeeded
         selectGifs()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         selectedGifs = result
-        
         turnLoadingViewModeOn(false)
         stateInfoView.text = NSLocalizedString("Loading", comment: "")
         let width = UIScreen.main.bounds.width
         tableView.rowHeight = width*0.7
-        
         tableView.reloadData()
     }
 
@@ -65,12 +61,12 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
         return cell
     }
-    
+
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let currentOffset = scrollView.contentOffset.y
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         let deltaOffset = maximumOffset - currentOffset
-        
+
         if deltaOffset <= -10 && !loadStatus {
             loadStatus = true
             turnLoadingViewModeOn(true)
@@ -89,7 +85,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
             self.tableView.reloadData()
         }
     }
-    
+
     private func loadMore(completion: @escaping ()->Void) {
         DispatchQueue.global().async {
             self.gifsOnScreenCount += 20
@@ -104,7 +100,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }))
         self.present(alert,animated: true, completion: nil)
     }
-    
+
     private func selectGifs() {
         selectedGifs.removeAll()
         for gif in result{
