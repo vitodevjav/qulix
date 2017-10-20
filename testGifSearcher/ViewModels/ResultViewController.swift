@@ -4,7 +4,6 @@ import SDWebImage
 
 class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
 
-
     private var gifsOnScreenCount = 20
 
     var result: [GifModel] = []
@@ -50,20 +49,23 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
         tableView.reloadData()
     }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        selectedGifs = result
-
+    
+    func prepareView(){
         loadMoreView.isHidden = true
         activityIndicator.isHidden = true
         stateInfoView.isHidden = true
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        selectedGifs = result
+        
+        prepareView()
         stateInfoView.text = NSLocalizedString("Loading", comment: "")
-        
-        self.tableView.tableFooterView?.isHidden = false
-        
         let width = UIScreen.main.bounds.width
         tableView.rowHeight = width*0.7
+        
         tableView.reloadData()
     }
 
@@ -86,13 +88,19 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return cell
     }
 
-    func gifsDidLoadOntoScreen(){
+    func gifsDidLoad(){
         DispatchQueue.main.async{
             self.loadStatus = false
             self.activityIndicator.stopAnimating()
             self.loadMoreView.isHidden = true
             self.tableView.reloadData()
         }
+    }
+    
+    func prepareViewForLoadingGifs(){
+        loadMoreView.isHidden = false
+        activityIndicator.isHidden = false
+        stateInfoView.isHidden =  false
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -102,17 +110,15 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         if deltaOffset <= -10 && !loadStatus {
             loadStatus = true
-            loadMoreView.isHidden = false
-            activityIndicator.isHidden = false
-            stateInfoView.isHidden =  false
+            prepareViewForLoadingGifs()
             activityIndicator.startAnimating()
-            loadmore(completion: {() in
-                self.gifsDidLoadOntoScreen()
-            })
+            loadMore(){
+                self.gifsDidLoad()
+            }
         }
     }
     
-    func loadmore(completion: @escaping ()->()){
+    func loadMore(completion: @escaping ()->()){
         DispatchQueue.global().async {
             self.gifsOnScreenCount += 20
             completion()

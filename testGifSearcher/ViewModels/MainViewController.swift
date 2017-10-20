@@ -23,15 +23,14 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tableView.isHidden = false
-        stateInfoView.isHidden = true
-        activityIndicator.isHidden = true
+        prepareView()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let localisedString = NSLocalizedString("Loading", comment: "")
 
-        refreshControl.attributedTitle = NSAttributedString(string: NSLocalizedString("Loading", comment: ""))
+        refreshControl.attributedTitle = NSAttributedString(string: localisedString)
         refreshControl.addTarget(self, action: #selector(refresh(sender:)), for: UIControlEvents.valueChanged)
         tableView.addSubview(refreshControl)
 
@@ -40,20 +39,30 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         stateInfoView.isHidden = false
 
         giphyService.returnTrendingGifs(completion: {(isSuccess:Bool, result:[GifModel])in
-            self.gifsAreLoadedCompletionHandler(isSuccess,result)})
+            self.trendedGifsAreLoadedCompletionHandler(isSuccess,result)})
         
         let width = UIScreen.main.bounds.width
         tableView.rowHeight = width*0.7
     }
 
-    private func gifsAreLoadedCompletionHandler(_ isSuccess:Bool,_ result:[GifModel]){
+    func prepareView(){
+        tableView.isHidden = false
+        stateInfoView.isHidden = true
+        activityIndicator.isHidden = true
+        searchBar.isHidden = false
+    }
+    
+    func prepareForTransition(){
+        stateInfoView.isHidden = false
+        tableView.isHidden = true
+        activityIndicator.isHidden = false
+    }
+    
+    private func trendedGifsAreLoadedCompletionHandler(_ isSuccess:Bool,_ result:[GifModel]){
         if isSuccess {
             trendingGifs = result
             self.tableView.reloadData()
-            activityIndicator.isHidden = true
-            searchBar.isHidden = false
-            stateInfoView.isHidden = true
-            tableView.isHidden = false
+            prepareView()
         }else {
             self.createAlert(title: NSLocalizedString("WarningTitle", comment: ""), message: NSLocalizedString("WarningMessage", comment: ""))
         }
@@ -66,11 +75,8 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        activityIndicator.isHidden = false
+        prepareForTransition()
         stateInfoView.text = NSLocalizedString("Loading", comment: "")
-        stateInfoView.isHidden = false
-        tableView.isHidden = true
-
         giphyService.searchGifsByName(searchBar.text!, completion: {(isSuccess,result:[GifModel]) in
                                         self.searchResult = result;
                                         if isSuccess {
@@ -95,6 +101,12 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
 
         return cell
     }
+    
+    func gifsWillLoad(){
+        loadStatus = true
+        loadMoreView.isHidden = false
+        stateInfoView.isHidden =  false
+    }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let currentOffset = scrollView.contentOffset.y
@@ -107,17 +119,15 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
                 return
             }
             if !loadStatus {
-                loadStatus = true
-                loadMoreView.isHidden = false
-                stateInfoView.isHidden =  false
-                loadmore(completion: {() in
+                gifsWillLoad()
+                loadMore(completion: {() in
                     self.gifsDidLoadOntoScreen()
                 })
             }
         }
     }
     
-    func loadmore(completion: @escaping ()->()){
+    func loadMore(completion: @escaping ()->Void) {
         DispatchQueue.global().async {
             self.gifsOnScreenCount += 20
             completion()
@@ -134,17 +144,17 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     
     @objc func refresh(sender:AnyObject) {
         refreshBegin(newtext: "Refresh",
-                     refreshEnd: {(x:Int) -> () in
+                     refreshEnd: {() -> () in
                         self.tableView.reloadData()
                         self.refreshControl.endRefreshing()
         })
     }
     
-    func refreshBegin(newtext:String, refreshEnd: @escaping (Int) -> ()) {
+    func refreshBegin(newtext:String, refreshEnd: @escaping () -> Void) {
         DispatchQueue.global().async {
             self.giphyService.returnTrendingGifs(completion: {(isSuccess:Bool, result:[GifModel])in
-                self.gifsAreLoadedCompletionHandler(isSuccess,result)})
-                refreshEnd(0)
+                self.trendedGifsAreLoadedCompletionHandler(isSuccess,result)})
+                refreshEnd()
         }
     }
 
@@ -153,10 +163,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: NSLocalizedString("Close", comment: ""), style: UIAlertActionStyle.default, handler: { (action) in
             alert.dismiss(animated: true, completion: nil)
-                self.tableView.isHidden = false
-                self.stateInfoView.isHidden = true
-                self.activityIndicator.isHidden = true
-
+                self.prepareView()
         }))
         self.present(alert,animated: true, completion: nil)
     }
