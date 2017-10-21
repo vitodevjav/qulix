@@ -11,7 +11,6 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     private let gifsCountPerRequest = 20
 
     @IBOutlet weak var gifsLoadingStatusView: UIView!
-
     @IBOutlet weak var progressStateInfo: UILabel!
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
@@ -83,6 +82,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         hideTableView(true)
+        view.endEditing(false)
         progressStateInfo.text = NSLocalizedString("Loading", comment: "")
         giphyService.searchGifsByName(searchBar.text!, completion: {(isSuccess,result:[GifModel]) in
             self.searchResult = result;
@@ -93,6 +93,10 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
                                  message: NSLocalizedString("WarningMessage", comment: ""))
             }
         })
+    }
+
+    @IBAction func backgroundTapped(_ sender: Any) {
+        view.endEditing(false)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -154,7 +158,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
                                       style: UIAlertActionStyle.default,
                                       handler: { (action) in
                                         alert.dismiss(animated: true, completion: nil)
-                                        self.hideTableView(true)
+                                        self.hideTableView(false)
         }))
         self.present(alert,animated: true, completion: nil)
     }

@@ -3,7 +3,7 @@ import SDWebImage
 
 @IBDesignable
 class GifTableViewCell: UITableViewCell {
-    static let identifier = "gifCell"
+    static let identifier = "GifTableViewCell"
     @IBOutlet weak var isTrendedMarkerView: UIView!
     @IBOutlet weak var gifView: FLAnimatedImageView!
     @IBOutlet weak var starImageView: UIImageView!
