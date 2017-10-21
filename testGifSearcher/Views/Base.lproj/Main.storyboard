@@ -60,7 +60,7 @@
                                     <color key="backgroundColor" red="0.60000002379999995" green="0.60000002379999995" blue="0.60000002379999995" alpha="1" colorSpace="calibratedRGB"/>
                                 </view>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" rowHeight="200" id="T14-Uc-Obh" customClass="GifTableViewCell" customModule="testGifSearcher" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="gifCell" rowHeight="200" id="T14-Uc-Obh" customClass="GifTableViewCell" customModule="testGifSearcher" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="343" height="200"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="T14-Uc-Obh" id="rUv-oR-Vjk">
@@ -129,7 +129,7 @@
                     <navigationItem key="navigationItem" title="Gif Searcher" id="1sn-hz-5wW"/>
                     <connections>
                         <outlet property="activityIndicator" destination="oT6-D2-IXE" id="hB4-oU-A0U"/>
-                        <outlet property="loadMoreView" destination="BFX-2n-qcS" id="2cN-rH-CdX"/>
+                        <outlet property="gifsLoadingStatusView" destination="BFX-2n-qcS" id="3Pz-Xw-Q9t"/>
                         <outlet property="searchBar" destination="OK8-cm-orM" id="kpA-sy-hjh"/>
                         <outlet property="stateInfoView" destination="9cU-Lg-88Q" id="jz6-xJ-6TE"/>
                         <outlet property="tableView" destination="M5D-Nk-Fp2" id="q8l-Lh-141"/>
@@ -282,7 +282,6 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="activityIndicator" destination="1E3-3F-v19" id="4uX-qj-gEX"/>
-                        <outlet property="loadMoreView" destination="Jy5-5a-BDh" id="0ac-1P-LXM"/>
                         <outlet property="stateInfoView" destination="o15-Zg-GCT" id="YRH-HZ-eEk"/>
                         <outlet property="tableView" destination="38F-dZ-6hI" id="3fy-dK-bP7"/>
                     </connections>

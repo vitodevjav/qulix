@@ -57,7 +57,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let cell = tableView.dequeueReusableCell(withIdentifier: "searchCell", for: indexPath) as! GifTableViewCell
 
         cell.gifView.sd_setImage(with: URL(string: selectedGifs[indexPath.row].url)!, placeholderImage: UIImage(named: "ImagePlaceHolder"))
-        if (selectedGifs[indexPath.row].trended) {cell.starImageView.image = UIImage(named: "trendedImage")}
+        if (selectedGifs[indexPath.row].isTrended) {cell.starImageView.image = UIImage(named: "trendedImage")}
 
         return cell
     }
