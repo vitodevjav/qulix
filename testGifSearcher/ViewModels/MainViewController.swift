@@ -35,8 +35,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         progressStateInfo.text = NSLocalizedString("Loading", comment: "")
         progressStateInfo.isHidden = false
 
-        giphyService.returnTrendingGifs(completion: {(isSuccess:Bool, result:[GifModel])in
-            self.trendedGifsDidLoad(isSuccess,result)})
+        giphyService.returnTrendingGifs(completion: self.trendedGifsDidLoad)
 
         let width = UIScreen.main.bounds.width
         tableView.rowHeight = width*0.7

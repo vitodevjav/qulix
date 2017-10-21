@@ -7,15 +7,16 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private var gifsOnScreenCount = 20
     var result: [GifModel] = []
     private var selectedGifs:[GifModel] = []
-    private var yFamilyIsNeeded:Bool = false
-    private var gFamilyIsNeeded:Bool = false
-    private var pgFamilyIsNeeded:Bool = false
+    private var yFamilyIsNeeded:Bool = true
+    private var gFamilyIsNeeded:Bool = true
+    private var pgFamilyIsNeeded:Bool = true
     private var loadStatus = false
+    private let loadMoreGifsScrollOffset:CGFloat = -10.0
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var loadMoreView: UIView!
-    @IBOutlet weak var stateInfoView: UILabel!
+    @IBOutlet weak var gifsLoadingStatusView: UIView!
+    @IBOutlet weak var progressStateInfo: UILabel!
 
     @IBAction func pgCheckBoxStatusIsChanged(_ sender: Any) {
         pgFamilyIsNeeded = !pgFamilyIsNeeded
@@ -34,31 +35,34 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         selectedGifs = result
-        turnLoadingViewModeOn(false)
-        stateInfoView.text = NSLocalizedString("Loading", comment: "")
+
+        showGifsLoadingStatusView(false)
+        progressStateInfo.text = NSLocalizedString("Loading", comment: "")
         let width = UIScreen.main.bounds.width
         tableView.rowHeight = width*0.7
-        tableView.reloadData()
+//        tableView.reloadData()
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if selectedGifs.count == 0 { createAlert(title: NSLocalizedString("WarningTitle", comment: ""), message: NSLocalizedString("WarningMessage", comment: ""))}
+        if selectedGifs.count == 0 {
+            createAlert(title: NSLocalizedString("WarningTitle", comment: ""),
+                        message: NSLocalizedString("WarningMessage", comment: ""))
 
-        if gifsOnScreenCount > selectedGifs.count {
-            return selectedGifs.count
-        }else {
-            return gifsOnScreenCount
         }
+        return (gifsOnScreenCount > selectedGifs.count) ? selectedGifs.count : gifsOnScreenCount
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "searchCell", for: indexPath) as! GifTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: GifTableViewCell.identifier,
+                                                 for: indexPath) as! GifTableViewCell
 
-        cell.gifView.sd_setImage(with: URL(string: selectedGifs[indexPath.row].url)!, placeholderImage: UIImage(named: "ImagePlaceHolder"))
-        if (selectedGifs[indexPath.row].isTrended) {cell.starImageView.image = UIImage(named: "trendedImage")}
+        cell.gifView.sd_setImage(with: URL(string: selectedGifs[indexPath.row].url),
+                                 placeholderImage: UIImage(named: "ImagePlaceHolder"))
 
+        if (selectedGifs[indexPath.row].isTrended) {
+            cell.setTrended()
+        }
         return cell
     }
 
@@ -67,26 +71,27 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         let deltaOffset = maximumOffset - currentOffset
 
-        if deltaOffset <= -10 && !loadStatus {
-            loadStatus = true
-            turnLoadingViewModeOn(true)
-            activityIndicator.startAnimating()
-            loadMore(){
-                self.gifsDidLoad()
-            }
+        guard deltaOffset <= loadMoreGifsScrollOffset else {
+            return
+        }
+        guard !loadStatus else {
+            return
+        }
+        loadStatus = true
+        showGifsLoadingStatusView(true)
+        loadMoreGifs(){
+            self.gifsDidLoad()
         }
     }
 
     private func gifsDidLoad() {
         DispatchQueue.main.async{
-            self.loadStatus = false
-            self.activityIndicator.stopAnimating()
-            self.loadMoreView.isHidden = true
+            self.showGifsLoadingStatusView(false)
             self.tableView.reloadData()
         }
     }
 
-    private func loadMore(completion: @escaping ()->Void) {
+    private func loadMoreGifs(completion: @escaping ()->Void) {
         DispatchQueue.global().async {
             self.gifsOnScreenCount += 20
             completion()
@@ -94,9 +99,13 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
 
     private func createAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Close", comment: ""), style: UIAlertActionStyle.default, handler: { (action) in
-            alert.dismiss(animated: true, completion: nil)
+        let alert = UIAlertController(title: title, message: message,
+                                      preferredStyle: UIAlertControllerStyle.alert)
+
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Close", comment: ""),
+                                      style: UIAlertActionStyle.default,
+                                      handler: { (action) in
+                                        alert.dismiss(animated: true, completion: nil)
         }))
         self.present(alert,animated: true, completion: nil)
     }
@@ -117,9 +126,9 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         tableView.reloadData()
     }
 
-    private func turnLoadingViewModeOn(_ isLoading: Bool) {
-			loadMoreView.isHidden = !isLoading
+    private func showGifsLoadingStatusView(_ isLoading: Bool) {
+			gifsLoadingStatusView.isHidden = !isLoading
             activityIndicator.isHidden = !isLoading
-            stateInfoView.isHidden =  !isLoading
+            progressStateInfo.isHidden =  !isLoading
     }
 }
