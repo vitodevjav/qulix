@@ -87,6 +87,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private func gifsDidLoad() {
         DispatchQueue.main.async{
             self.showGifsLoadingStatusView(false)
+            self.loadStatus = false
             self.tableView.reloadData()
         }
     }
