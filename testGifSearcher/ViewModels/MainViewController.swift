@@ -22,7 +22,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     private var loadStatus = false
     private var refreshControl = UIRefreshControl()
 
-    //MARK: - Overriden ViewController's methods
+    //MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         let refreshTitle = NSLocalizedString("Loading", comment: "")
@@ -82,7 +82,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         }
     }
 
-    //MARK: - Type & search logics
+    //MARK: - Actions
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         hideTableView(true)
         view.endEditing(false)
@@ -128,7 +128,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         }
     }
 
-    //MARK: - Methods for updating view's content
+    //MARK: - Updating view content
     private func loadMoreGifs(completion: @escaping ()->Void) {
         DispatchQueue.global().async {
             self.gifsOnScreenCount += self.gifsCountPerRequest
@@ -150,7 +150,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         }
     }
 
-    //MARK: - Alerts creating
+    //MARK: - Creating alerts
     private func createAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message,
                                       preferredStyle: UIAlertControllerStyle.alert)
@@ -163,7 +163,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         self.present(alert,animated: true, completion: nil)
     }
 
-    //MARK: - Methods for switching View's states
+    //MARK: - Switching view states
     private func showGifsLoadingStatusView(_ isShown: Bool) {
         loadStatus = isShown
         gifsLoadingStatusView.isHidden = !isShown
