@@ -82,7 +82,12 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         hideTableView(true)
         view.endEditing(false)
         progressStateInfo.text = NSLocalizedString("Loading", comment: "")
-        giphyService.searchGifsByName(searchBar.text!, completion: {(result:[GifModel]?) in
+        guard let searchRequest = searchBar.text else {
+            self.createAlert(title: NSLocalizedString("WarningTitle", comment: ""),
+                             message: NSLocalizedString("WarningMessage", comment: ""))
+            return
+        }
+        giphyService.searchGifsByName(searchRequest, completion: {(result:[GifModel]?) in
             guard let data = result else {
                 self.createAlert(title: NSLocalizedString("WarningTitle", comment: ""),
                                  message: NSLocalizedString("WarningMessage", comment: ""))
@@ -101,7 +106,12 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destination = segue.destination as! ResultViewController
         destination.result = searchResult
-        destination.title = self.searchBar.text!
+        guard let searchRequest = self.searchBar.text else {
+            createAlert(title: NSLocalizedString("WarningTitle", comment: ""),
+                             message: NSLocalizedString("WarningMessage", comment: ""))
+            return
+        }
+        destination.title = searchRequest
     }
 
     //MARK: - Event handlers

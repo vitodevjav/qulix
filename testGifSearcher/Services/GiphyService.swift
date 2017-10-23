@@ -14,7 +14,7 @@ class GiphyService {
         var gifArray:[GifModel]=[]
         for data in dataMap {
             guard let images = data["images"] as? [String: Any],
-                  let fixedSizeGif = images["downsized"] as? [String: Any],
+                  let fixedSizeGif = images["original"] as? [String: Any],
                   let trended = (data["trending_datetime"] as? String)?.isEmpty,
                   let family = data["rating"] as? String,
                   let url = fixedSizeGif["url"] as? String else {
