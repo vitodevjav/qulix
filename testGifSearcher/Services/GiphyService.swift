@@ -12,7 +12,7 @@ class GiphyService {
             return []
         }
         var gifArray:[GifModel]=[]
-        for data in dataMap{
+        for data in dataMap {
 
             guard let images = data["images"] as? [String: Any] else {
                 return []
@@ -35,6 +35,10 @@ class GiphyService {
         return gifArray
     }
 
+    private func isDataReceived (data: [Any]) -> Bool {
+        return !data.isEmpty
+    }
+
     public func returnTrendingGifs(completion:@escaping(Bool,[GifModel]) -> Void){
         let urlString = "https://api.giphy.com/v1/gifs/trending?api_key=\(keyApi)&limit=\(self.gifsCountToReturn)"
         
@@ -46,11 +50,7 @@ class GiphyService {
                     return
                 }
                 let gifArray  = self.parseJsonToGifArray(json)
-                if gifArray.count > 0 {
-                    completion(true,gifArray)
-                } else {
-                    completion(false,gifArray)
-                }
+                completion(self.isDataReceived(data: gifArray), gifArray)
             }
     }
 
@@ -65,11 +65,7 @@ class GiphyService {
                     return
                 }
                 let gifArray  = self.parseJsonToGifArray(json)
-                if gifArray.count > 0 {
-                    completion(true,gifArray)
-                } else {
-                    completion(false,gifArray)
-                }
+                completion(self.isDataReceived(data: gifArray), gifArray)
         }
     }
 }

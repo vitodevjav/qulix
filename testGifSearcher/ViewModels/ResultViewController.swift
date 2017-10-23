@@ -41,7 +41,6 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         progressStateInfo.text = NSLocalizedString("Loading", comment: "")
         let width = UIScreen.main.bounds.width
         tableView.rowHeight = width*0.7
-//        tableView.reloadData()
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -60,7 +59,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         cell.gifView.sd_setImage(with: URL(string: selectedGifs[indexPath.row].url),
                                  placeholderImage: UIImage(named: "ImagePlaceHolder"))
 
-        if (selectedGifs[indexPath.row].isTrended) {
+        if selectedGifs[indexPath.row].isTrended {
             cell.setTrended()
         }
         return cell
@@ -79,7 +78,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
         loadStatus = true
         showGifsLoadingStatusView(true)
-        loadMoreGifs(){
+        loadMoreGifs() {
             self.gifsDidLoad()
         }
     }
@@ -114,13 +113,13 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private func selectGifs() {
         selectedGifs.removeAll()
         for gif in result{
-            if gFamilyIsNeeded && gif.family == "g"{
+            if gFamilyIsNeeded && gif.family == "g" {
                 selectedGifs.append(gif)
             }
-            if yFamilyIsNeeded && gif.family == "y"{
+            if yFamilyIsNeeded && gif.family == "y" {
                 selectedGifs.append(gif)
             }
-            if pgFamilyIsNeeded && gif.family == "pg"{
+            if pgFamilyIsNeeded && gif.family == "pg" {
                 selectedGifs.append(gif)
             }
         }
