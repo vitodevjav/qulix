@@ -16,7 +16,6 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
-    private var gifsOnScreenCount = 20;
     private var trendedGifs: [GifModel] = []
     private var searchResult: [GifModel] = []
     private var loadStatus = false
@@ -28,7 +27,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         let refreshTitle = NSLocalizedString("Loading", comment: "")
 
         refreshControl.attributedTitle = NSAttributedString(string: refreshTitle)
-        refreshControl.addTarget(self, action: #selector(refresh(sender:)),
+        refreshControl.addTarget(self, action: #selector(refreshTrendedGifs),
                                  for: UIControlEvents.valueChanged)
         tableView.addSubview(refreshControl)
 
@@ -48,11 +47,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
 
     //MARK: - TableView delegate's methods
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if gifsOnScreenCount > trendedGifs.count {
-            return trendedGifs.count
-        }else {
-            return gifsOnScreenCount
-        }
+        return trendedGifs.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -87,14 +82,14 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         hideTableView(true)
         view.endEditing(false)
         progressStateInfo.text = NSLocalizedString("Loading", comment: "")
-        giphyService.searchGifsByName(searchBar.text!, completion: {(isSuccess,result:[GifModel]) in
-            self.searchResult = result;
-            if isSuccess {
-                self.performSegue(withIdentifier:self.segueToResultView, sender: self)
-            }else {
+        giphyService.searchGifsByName(searchBar.text!, completion: {(result:[GifModel]?) in
+            guard let data = result else {
                 self.createAlert(title: NSLocalizedString("WarningTitle", comment: ""),
                                  message: NSLocalizedString("WarningMessage", comment: ""))
+                return
             }
+            self.searchResult = data;
+            self.performSegue(withIdentifier:self.segueToResultView, sender: self)
         })
     }
 
@@ -110,9 +105,9 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     }
 
     //MARK: - Event handlers
-    private func trendedGifsDidLoad(_ isSuccess:Bool,_ result:[GifModel]) {
-        if isSuccess {
-            trendedGifs = result
+    private func trendedGifsDidLoad(_ result:[GifModel]?) {
+        if let data = result  {
+            trendedGifs = data
             self.tableView.reloadData()
             hideTableView(false)
         }else {
@@ -131,22 +126,19 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     //MARK: - Updating view content
     private func loadMoreGifs(completion: @escaping ()->Void) {
         DispatchQueue.global().async {
-            self.gifsOnScreenCount += self.gifsCountPerRequest
             completion()
         }
     }
 
-    @objc private func refresh(sender:AnyObject) {
-        beginRefresh(newtext: "Refresh") {
-                        self.tableView.reloadData()
-                        self.refreshControl.endRefreshing()
-        }
+    @objc private func refreshTrendedGifs() {
+            self.tableView.reloadData()
+            self.refreshControl.endRefreshing()
     }
 
-    private func beginRefresh(newtext:String, endRefresh: @escaping () -> Void) {
+    private func refreshTrendedGifsAsync (comletion: @escaping () -> Void) {
         DispatchQueue.global().async {
             self.giphyService.returnTrendingGifs(completion: self.trendedGifsDidLoad)
-                endRefresh()
+            comletion()
         }
     }
 
@@ -167,7 +159,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     private func showGifsLoadingStatusView(_ isShown: Bool) {
         loadStatus = isShown
         gifsLoadingStatusView.isHidden = !isShown
-        progressStateInfo.isHidden =  !isShown
+        progressStateInfo.isHidden = !isShown
     }
 
     private func hideTableView (_ isHidden: Bool) {

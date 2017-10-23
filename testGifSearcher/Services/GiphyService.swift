@@ -13,59 +13,45 @@ class GiphyService {
         }
         var gifArray:[GifModel]=[]
         for data in dataMap {
-
-            guard let images = data["images"] as? [String: Any] else {
+            guard let images = data["images"] as? [String: Any],
+                  let fixedSizeGif = images["downsized"] as? [String: Any],
+                  let trended = (data["trending_datetime"] as? String)?.isEmpty,
+                  let family = data["rating"] as? String,
+                  let url = fixedSizeGif["url"] as? String else {
                 return []
             }
-            guard let fixedSizeGif = images["fixed_height_small"] as? [String: Any] else {
-                return []
-            }
-            guard let trended = (data["trending_datetime"] as? String)?.isEmpty else {
-                return []
-            }
-            guard let family = data["rating"] as? String else {
-                return []
-            }
-            guard let url = fixedSizeGif["url"] as? String else {
-                return []
-            }
-
             gifArray.append(GifModel(url: url,trended: trended,family: family))
         }
         return gifArray
     }
 
-    private func isDataReceived (data: [Any]) -> Bool {
-        return !data.isEmpty
-    }
-
-    public func returnTrendingGifs(completion:@escaping(Bool,[GifModel]) -> Void){
+    public func returnTrendingGifs(completion:@escaping([GifModel]?) -> Void){
         let urlString = "https://api.giphy.com/v1/gifs/trending?api_key=\(keyApi)&limit=\(self.gifsCountToReturn)"
         
         Alamofire.request(urlString, method: .get, parameters: nil,
                           encoding: JSONEncoding.default)
             .responseJSON { response in
                 guard let json = response.result.value as? [String: Any] else {
-                    completion(false,[])
+                    completion(nil)
                     return
                 }
                 let gifArray  = self.parseJsonToGifArray(json)
-                completion(self.isDataReceived(data: gifArray), gifArray)
+                completion(gifArray)
             }
     }
 
-    public func searchGifsByName(_ name:String, completion:@escaping(Bool,[GifModel]) -> Void){
+    public func searchGifsByName(_ name:String, completion:@escaping([GifModel]?) -> Void){
         let httpName = name.replacingOccurrences(of: " ", with: "+")
         let urlString = "https://api.giphy.com/v1/gifs/search?q=\(httpName)&api_key=\(keyApi)&limit=\(gifsCountToReturn)"
 
         Alamofire.request(urlString, method: .get, parameters: nil,encoding: JSONEncoding.default)
             .responseJSON { response in
                 guard let json = response.result.value as? [String: Any] else {
-                    completion(false,[])
+                    completion(nil)
                     return
                 }
                 let gifArray  = self.parseJsonToGifArray(json)
-                completion(self.isDataReceived(data: gifArray), gifArray)
+                completion(gifArray)
         }
     }
 }

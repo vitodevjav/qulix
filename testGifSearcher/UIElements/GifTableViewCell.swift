@@ -4,6 +4,7 @@ import SDWebImage
 @IBDesignable
 class GifTableViewCell: UITableViewCell {
     static let identifier = "GifTableViewCell"
+    private let trendedMarkImage = UIImage(named: "trendedImage")
     @IBOutlet weak var isTrendedMarkerView: UIView!
     @IBOutlet weak var gifView: FLAnimatedImageView!
     @IBOutlet weak var starImageView: UIImageView!
@@ -14,7 +15,7 @@ class GifTableViewCell: UITableViewCell {
     }
 
     public func setTrended() {
-        starImageView.image = UIImage(named: "trendedImage")
+        starImageView.image = trendedMarkImage
         isTrendedMarkerView.isHidden = false
     }
 }

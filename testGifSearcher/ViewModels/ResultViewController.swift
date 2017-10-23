@@ -44,12 +44,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if selectedGifs.count == 0 {
-            createAlert(title: NSLocalizedString("WarningTitle", comment: ""),
-                        message: NSLocalizedString("WarningMessage", comment: ""))
-
-        }
-        return (gifsOnScreenCount > selectedGifs.count) ? selectedGifs.count : gifsOnScreenCount
+        return selectedGifs.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
