@@ -2,15 +2,12 @@ import UIKit
 import Alamofire
 import SDWebImage
 
-class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource{
+class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
 
     private let segueToResultView = "segueToResultView"
     private let giphyService = GiphyService()
     private let gifPlaceholder = UIImage(named: "ImagePlaceHolder")
-    private let loadMoreGifsScrollOffset:CGFloat = 10.0
-    private let gifsCountPerRequest = 20
 
-    @IBOutlet weak var gifsLoadingStatusView: UIView!
     @IBOutlet weak var progressStateInfo: UILabel!
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
@@ -18,7 +15,6 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
 
     private var trendedGifs: [GifModel] = []
     private var searchResult: [GifModel] = []
-    private var loadStatus = false
     private var refreshControl = UIRefreshControl()
 
     //MARK: - View lifecycle
@@ -60,23 +56,6 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         return cell
     }
 
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let currentOffset = scrollView.contentOffset.y
-        let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
-        let deltaOffset = maximumOffset - currentOffset
-
-        guard deltaOffset <= -loadMoreGifsScrollOffset else {
-            return
-        }
-        guard !loadStatus else {
-            return
-        }
-        showGifsLoadingStatusView(true)
-        loadMoreGifs() {
-            self.gifsDidLoad()
-        }
-    }
-
     //MARK: - Actions
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         hideTableView(true)
@@ -116,7 +95,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
 
     //MARK: - Event handlers
     private func trendedGifsDidLoad(_ result:[GifModel]?) {
-        if let data = result  {
+        if let data = result {
             trendedGifs = data
             self.tableView.reloadData()
             hideTableView(false)
@@ -126,27 +105,16 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         }
     }
 
-    private func gifsDidLoad() {
-        self.showGifsLoadingStatusView(false)
-        self.tableView.reloadData()
-    }
-
     //MARK: - Updating view content
-    private func loadMoreGifs(completion: @escaping ()->Void) {
-        DispatchQueue.global().async {
-            completion()
-        }
-    }
-
     @objc private func refreshTrendedGifs() {
             self.tableView.reloadData()
             self.refreshControl.endRefreshing()
     }
 
-    private func refreshTrendedGifsAsync (comletion: @escaping () -> Void) {
+    private func refreshTrendedGifsAsync (completion: @escaping () -> Void) {
         DispatchQueue.global().async {
             self.giphyService.returnTrendingGifs(completion: self.trendedGifsDidLoad)
-            comletion()
+            completion()
         }
     }
 
@@ -156,20 +124,14 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
                                       preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: NSLocalizedString("Close", comment: ""),
                                       style: .default,
-                                      handler: { (action) in
+                                      handler: {(action) in
                                         alert.dismiss(animated: true, completion: nil)
                                         self.hideTableView(false)
         }))
-        self.present(alert,animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
 
     //MARK: - Switching view states
-    private func showGifsLoadingStatusView(_ isShown: Bool) {
-        loadStatus = isShown
-        gifsLoadingStatusView.isHidden = !isShown
-        progressStateInfo.isHidden = !isShown
-    }
-
     private func hideTableView (_ isHidden: Bool) {
             progressStateInfo.isHidden = !isHidden
             tableView.isHidden = isHidden
