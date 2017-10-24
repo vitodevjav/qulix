@@ -7,11 +7,11 @@ class GiphyService {
     private let keyApi = "oTZ3TChX3NjlHPtzKLCvLIuETVsEpp5q"
     private let gifsCountToReturn = 1000
 
-    private func parseJsonToGifArray(_ JSON:[String:Any])->[GifModel]{
-        guard let dataMap = JSON["data"] as? [[String: Any]] else {
+    private func parseJsonToGifArray(_ json: [String: Any])->[GifModel] {
+        guard let dataMap = json["data"] as? [[String: Any]] else {
             return []
         }
-        var gifArray:[GifModel]=[]
+        var gifArray: [GifModel]=[]
         for data in dataMap {
             guard let images = data["images"] as? [String: Any],
                   let fixedSizeGif = images["original"] as? [String: Any],
@@ -25,7 +25,7 @@ class GiphyService {
         return gifArray
     }
 
-    public func returnTrendingGifs(completion:@escaping([GifModel]?) -> Void){
+    public func returnTrendingGifs(completion: @escaping([GifModel]?) -> Void) {
         let urlString = "https://api.giphy.com/v1/gifs/trending?api_key=\(keyApi)&limit=\(self.gifsCountToReturn)"
         
         Alamofire.request(urlString).responseJSON { response in
@@ -38,7 +38,7 @@ class GiphyService {
         }
     }
 
-    public func searchGifsByName(_ name:String, completion:@escaping([GifModel]?) -> Void){
+    public func searchGifsByName(_ name: String, completion: @escaping([GifModel]?) -> Void) {
         let httpName = name.replacingOccurrences(of: " ", with: "+")
         let urlString = "https://api.giphy.com/v1/gifs/search?q=\(httpName)&api_key=\(keyApi)&limit=\(gifsCountToReturn)"
 
@@ -47,7 +47,7 @@ class GiphyService {
                 completion(nil)
                 return
             }
-            let gifArray  = self.parseJsonToGifArray(json)
+            let gifArray = self.parseJsonToGifArray(json)
             completion(gifArray)
         }
     }

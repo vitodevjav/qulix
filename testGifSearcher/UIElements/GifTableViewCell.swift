@@ -15,7 +15,6 @@ class GifTableViewCell: UITableViewCell {
     }
 
     public func setTrended() {
-        starImageView.image = trendedMarkImage
         isTrendedMarkerView.isHidden = false
     }
 }
