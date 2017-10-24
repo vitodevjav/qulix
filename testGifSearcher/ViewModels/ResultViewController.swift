@@ -3,17 +3,17 @@ import UIKit
 import SDWebImage
 
 
-class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
+class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     var giphyService: GiphyService!
 
     private var result: [GifModel] = []
-    private var selectedGifs:[GifModel] = []
+    private var selectedGifs: [GifModel] = []
     private var searchRequest: String!
-    private var yFamilyIsNeeded:Bool = true
-    private var gFamilyIsNeeded:Bool = true
-    private var pgFamilyIsNeeded:Bool = true
-    private let loadMoreGifsBottomOffset: CGFloat = 10.0
+    private var yFamilyIsNeeded: Bool = true
+    private var gFamilyIsNeeded: Bool = true
+    private var pgFamilyIsNeeded: Bool = true
+    private let getNextGifsFromServerBottomOffset: CGFloat = 10.0
     private var loadStatus = false
     @IBOutlet weak var loadingStateView: UIView!
     @IBOutlet weak var tableView: UITableView!
@@ -35,14 +35,14 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
     private func selectGifs() {
         selectedGifs.removeAll()
-        for gif in result{
-            if gFamilyIsNeeded && gif.family == "g"{
+        for gif in result {
+            if gFamilyIsNeeded && gif.family == "g" {
                 selectedGifs.append(gif)
             }
-            if yFamilyIsNeeded && gif.family == "y"{
+            if yFamilyIsNeeded && gif.family == "y" {
                 selectedGifs.append(gif)
             }
-            if pgFamilyIsNeeded && gif.family == "pg"{
+            if pgFamilyIsNeeded && gif.family == "pg" {
                 selectedGifs.append(gif)
             }
         }
@@ -100,7 +100,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         let deltaOffset = maximumOffset - currentOffset
         
-        guard deltaOffset <= loadMoreGifsBottomOffset else {
+        guard deltaOffset <= getNextGifsFromServerBottomOffset else {
             return
         }
         guard !loadStatus else {
@@ -117,7 +117,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
         alert.addAction(UIAlertAction(title: NSLocalizedString("Close", comment: ""),
                                       style: UIAlertActionStyle.default,
-                                      handler: { (action) in
+                                      handler: {(action) in
                                         alert.dismiss(animated: true, completion: nil)
         }))
         self.present(alert,animated: true, completion: nil)

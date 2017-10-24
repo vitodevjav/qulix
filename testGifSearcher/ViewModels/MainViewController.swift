@@ -12,9 +12,10 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var loadingStateView: UIView!
+
     private var loadStatus = false
     private var trendedGifsOffset = 0
-    private let loadMoreGifsBottomOffset: CGFloat = 10.0
+    private let getNextGifsFromServerBottomOffset: CGFloat = 10.0
     private var trendedGifs: [GifModel] = []
     private var refreshControl = UIRefreshControl()
 
@@ -24,8 +25,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         let refreshTitle = NSLocalizedString("Loading", comment: "")
 
         refreshControl.attributedTitle = NSAttributedString(string: refreshTitle)
-        refreshControl.addTarget(self, action: #selector(refreshTrendedGifs),
-                                 for: UIControlEvents.valueChanged)
+        refreshControl.addTarget(self, action: #selector(refreshTrendedGifs), for: .valueChanged)
         tableView.addSubview(refreshControl)
 
         giphyService.returnTrendingGifs(offset: trendedGifs.count, completion: trendedGifsDidLoad)
@@ -33,12 +33,6 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         let width = UIScreen.main.bounds.width
         tableView.rowHeight = width * 0.7
     }
-
-    func getNextGifsFromServer() {
-        giphyService.returnTrendingGifs(offset: trendedGifs.count, completion: trendedGifsDidLoad)
-    }
-    
-
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -58,7 +52,22 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
                                  placeholderImage: gifPlaceholder)
         cell.setTrended()
         return cell
+    }
 
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let currentOffset = scrollView.contentOffset.y
+        let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
+        let deltaOffset = maximumOffset - currentOffset
+
+        guard deltaOffset <= -getNextGifsFromServerBottomOffset else {
+            return
+        }
+        guard !loadStatus else {
+            return
+        }
+        loadStatus = true
+        loadingStateView.isHidden = false
+        getNextGifsFromServer()
     }
 
     //MARK: - Actions
@@ -84,47 +93,32 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         destination.title = searchRequest
     }
 
-
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let currentOffset = scrollView.contentOffset.y
-        let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
-        let deltaOffset = maximumOffset - currentOffset
-
-        guard deltaOffset <= -loadMoreGifsBottomOffset else {
-            return
-        }
-        guard !loadStatus else {
-            return
-        }
-        loadStatus = true
-        loadingStateView.isHidden = false
-        getNextGifsFromServer()
-    }
-
     //MARK: - Event handlers
-    private func trendedGifsDidLoad(_ result:[GifModel]?) {
-        if let data = result {
-            trendedGifs += data
-            self.tableView.reloadData()
-            hideTableView(false)
-        }else {
+    private func trendedGifsDidLoad(result: [GifModel]?) {
+        refreshControl.endRefreshing()
+        guard let data = result else {
             self.createAlert(title: NSLocalizedString("WarningTitle", comment: ""),
                              message: NSLocalizedString("WarningMessage", comment: ""))
+            return
         }
+        trendedGifs += data
+        self.tableView.reloadData()
+        hideTableView(false)
     }
-
 
     //MARK: - Updating view content
-    @objc private func refreshTrendedGifs() {
-            self.tableView.reloadData()
-            self.refreshControl.endRefreshing()
+    @objc func refreshTrendedGifs() {
+        refreshTrendedGifsAsync()
     }
 
-    private func refreshTrendedGifsAsync (completion: @escaping () -> Void) {
+    private func refreshTrendedGifsAsync () {
         DispatchQueue.global().async {
             self.giphyService.returnTrendingGifs(offset: self.trendedGifs.count, completion: self.trendedGifsDidLoad)
-            completion()
         }
+    }
+
+    func getNextGifsFromServer() {
+        giphyService.returnTrendingGifs(offset: trendedGifs.count, completion: trendedGifsDidLoad)
     }
 
     //MARK: - Creating alerts
