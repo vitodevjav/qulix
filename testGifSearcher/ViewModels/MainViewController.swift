@@ -28,9 +28,9 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         stateInfoView.text = NSLocalizedString("Loading", comment: "")
         stateInfoView.isHidden = false
 
-        giphyService.returnTrendingGifs(completion: {(isSuccess:Bool, result:[GifModel])in
-            self.gifsAreLoadedCompletionHandler(isSuccess,result)})
-        
+        giphyService.returnTrendingGifs(offset: trendingGifs.count, completion: {(isSuccess: Bool, result: [GifModel]) in
+            self.gifsAreLoadedCompletionHandler(isSuccess, result)
+        })
         let width = UIScreen.main.bounds.width
         tableView.rowHeight = width*0.7
     }
@@ -49,8 +49,8 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         }
     }
 
-    func getNextGifsFromServer(){
-        giphyService.returnTrendingGifs(completion: {(isSuccess:Bool, result:[GifModel])in
+    func getNextGifsFromServer() {
+        giphyService.returnTrendingGifs(offset: trendingGifs.count, completion: {(isSuccess: Bool, result: [GifModel]) in
             self.trendingGifs += result
             self.loadingStateView.isHidden = true
             self.tableView.reloadData()
@@ -75,7 +75,6 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! GifTableViewCell
 
-        
         cell.gifView.sd_setImage(with: URL(string: trendingGifs[indexPath.row].url)!, placeholderImage: UIImage(named: "ImagePlaceHolder"))
         if (trendingGifs[indexPath.row].trended) {cell.starImageView.image = UIImage(named: "trendedImage")}
 

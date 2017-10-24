@@ -6,7 +6,6 @@ class GiphyService {
 
     private let keyApi = "oTZ3TChX3NjlHPtzKLCvLIuETVsEpp5q"
     private let gifsCountToReturn = 50
-    private var trendedGifsOffset = 0
 
     private func parseJsonToGifArray(_ JSON:[String:Any])->[GifModel]{
         var gifArray:[GifModel]=[]
@@ -26,26 +25,25 @@ class GiphyService {
         return gifArray
     }
 
-    public func returnTrendingGifs(completion:@escaping(Bool,[GifModel]) -> Void){
+    public func returnTrendingGifs(offset: Int, completion: @escaping (Bool, [GifModel]) -> Void) {
         var gifArray:[GifModel]=[]
-        let urlString = "https://api.giphy.com/v1/gifs/trending?api_key=\(keyApi)&limit=\(self.gifsCountToReturn)&offset=\(self.trendedGifsOffset)"
+        let urlString = "https://api.giphy.com/v1/gifs/trending?api_key=\(keyApi)&limit=\(self.gifsCountToReturn)&offset=\(offset)"
         
         Alamofire.request(urlString, method: .get, parameters: nil,encoding: JSONEncoding.default)
             .responseJSON { response in
                 gifArray  = self.parseJsonToGifArray(response.result.value as! [String: Any])
                 if gifArray.count > 0 {
                     completion(true,gifArray)
-                    self.trendedGifsOffset += self.gifsCountToReturn
                 }
                 else{ completion(false,gifArray)}
             }
         
     }
 
-    public func searchGifsByName(_ name:String, completion:@escaping(Bool,[GifModel]) -> Void){
+    public func searchGifsByName(_ name:String, offset: Int, completion: @escaping (Bool, [GifModel]) -> Void) {
         var gifArray:[GifModel]=[]
         let httpName = name.replacingOccurrences(of: " ", with: "+")
-        let urlString = "https://api.giphy.com/v1/gifs/search?q=\(httpName)&api_key=\(keyApi)&limit=\(gifsCountToReturn)"
+        let urlString = "https://api.giphy.com/v1/gifs/search?q=\(httpName)&api_key=\(keyApi)&limit=\(gifsCountToReturn)&offset=\(offset)"
 
         Alamofire.request(urlString, method: .get, parameters: nil,encoding: JSONEncoding.default)
             .responseJSON { response in

@@ -9,10 +9,12 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
     private var result: [GifModel] = []
     private var selectedGifs:[GifModel] = []
+    private var searchRequest: String!
 
     private var yFamilyIsNeeded:Bool = false
     private var gFamilyIsNeeded:Bool = false
     private var pgFamilyIsNeeded:Bool = false
+
     private let loadMoreGifsBottomOffset: CGFloat = 10.0
     private var loadStatus = false
 
@@ -58,7 +60,8 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewDidLoad() {
         super.viewDidLoad()
         if let searchRequest = title {
-            giphyService.searchGifsByName(searchRequest, completion: gifsDidLoad)
+            self.searchRequest = searchRequest
+            giphyService.searchGifsByName(searchRequest, offset: result.count, completion: gifsDidLoad)
         }
         selectedGifs = result
 
@@ -80,8 +83,8 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return cell
     }
 
-    func getNextGifsFromServer(){
-        giphyService.returnTrendingGifs(completion: {(isSuccess:Bool, result:[GifModel])in
+    func getNextGifsFromServer() {
+         giphyService.searchGifsByName(searchRequest, offset: result.count, completion: {(isSuccess:Bool, result:[GifModel])in
             self.result += result
             self.loadingStateView.isHidden = true
             self.selectGifs()
