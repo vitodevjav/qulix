@@ -13,9 +13,12 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
+
+    @IBOutlet weak var loadingStateView: UIView!
     private var loadStatus = false
     private var gifsOnScreenCount = 50
     private var trendedGifsOffset = 0
+    private let loadMoreGifsBottomOffset: CGFloat = 10.0
     private var trendingGifs: [GifModel] = []
     private var searchResult: [GifModel] = []
 
@@ -47,37 +50,26 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     }
 
     func getNextGifsFromServer(){
-        gifsOnScreenCount += 50
-        tableView.reloadData()
         giphyService.returnTrendingGifs(completion: {(isSuccess:Bool, result:[GifModel])in
             self.trendingGifs += result
-            self.loadStatus = false
+            self.loadingStateView.isHidden = true
             self.tableView.reloadData()
+            self.loadStatus = false
         })
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destination = segue.destination as! ResultViewController
-        destination.result = searchResult
+        destination.giphyService = giphyService
         destination.title = self.searchBar.text!
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        activityIndicator.isHidden = false
-        stateInfoView.text = NSLocalizedString("Loading", comment: "")
-        stateInfoView.isHidden = false
-        tableView.isHidden = true
-
-        giphyService.searchGifsByName(searchBar.text!, completion: {(isSuccess,result:[GifModel]) in
-                                        self.searchResult = result;
-                                        if isSuccess {
-                                            self.performSegue(withIdentifier:self.searchSegueIdentifier, sender: self)
-                                        }else {self.createAlert(title: NSLocalizedString("WarningTitle", comment: ""), message: NSLocalizedString("WarningMessage", comment: ""))}
-        })
+        performSegue(withIdentifier: searchSegueIdentifier, sender: self)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return gifsOnScreenCount > trendingGifs.count ? trendingGifs.count : gifsOnScreenCount
+        return trendingGifs.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -95,20 +87,18 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         let deltaOffset = maximumOffset - currentOffset
 
-        if deltaOffset <= 10 && !loadStatus{
-            if self.gifsOnScreenCount < self.trendingGifs.count{
-                self.gifsOnScreenCount += 50
-                //loadStatus = true
-                //getNextGifsFromServer()
-               tableView.reloadData()
-            }else {
-                createAlert(title: NSLocalizedString("WarningTitle", comment: ""), message: NSLocalizedString("WarningMessage", comment: ""))
-            }
+        guard deltaOffset <= -loadMoreGifsBottomOffset else {
+            return
         }
+        guard !loadStatus else {
+            return
+        }
+        loadStatus = true
+        loadingStateView.isHidden = false
+        getNextGifsFromServer()
     }
 
     private func createAlert(title: String, message: String){
-
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: NSLocalizedString("Close", comment: ""), style: UIAlertActionStyle.default, handler: { (action) in
             alert.dismiss(animated: true, completion: nil)
@@ -119,6 +109,5 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         }))
         self.present(alert,animated: true, completion: nil)
     }
-
 }
 

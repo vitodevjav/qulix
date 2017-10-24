@@ -4,19 +4,20 @@ import SDWebImage
 
 class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
 
-
+    var giphyService: GiphyService!
     private var gifsOnScreenCount = 50
 
-    var result: [GifModel] = []
+    private var result: [GifModel] = []
     private var selectedGifs:[GifModel] = []
 
     private var yFamilyIsNeeded:Bool = false
     private var gFamilyIsNeeded:Bool = false
     private var pgFamilyIsNeeded:Bool = false
+    private let loadMoreGifsBottomOffset: CGFloat = 10.0
+    private var loadStatus = false
 
+    @IBOutlet weak var loadingStateView: UIView!
     @IBOutlet weak var tableView: UITableView!
-
-    @IBOutlet weak var stateInfoView: UILabel!
     @IBAction func pgCheckBoxStatusIsChanged(_ sender: Any) {
         pgFamilyIsNeeded = !pgFamilyIsNeeded
         selectGifs()
@@ -46,10 +47,19 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
             }
         }
         tableView.reloadData()
+        self.loadStatus = false
+    }
+
+    private func gifsDidLoad(isSuccess: Bool, result: [GifModel]) {
+        self.result += result
+        selectGifs()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        if let searchRequest = title {
+            giphyService.searchGifsByName(searchRequest, completion: gifsDidLoad)
+        }
         selectedGifs = result
 
         let width = UIScreen.main.bounds.width
@@ -58,13 +68,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if selectedGifs.count == 0 { createAlert(title: NSLocalizedString("WarningTitle", comment: ""), message: NSLocalizedString("WarningMessage", comment: ""))}
-
-        if gifsOnScreenCount > selectedGifs.count {
-            return selectedGifs.count
-        }else {
-            return gifsOnScreenCount
-        }
+        return selectedGifs.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -76,15 +80,28 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return cell
     }
 
+    func getNextGifsFromServer(){
+        giphyService.returnTrendingGifs(completion: {(isSuccess:Bool, result:[GifModel])in
+            self.result += result
+            self.loadingStateView.isHidden = true
+            self.selectGifs()
+        })
+    }
+
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let currentOffset = scrollView.contentOffset.y
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         let deltaOffset = maximumOffset - currentOffset
         
-        if deltaOffset <= 0 {
-            self.gifsOnScreenCount += 50
-            tableView.reloadData()
+        guard deltaOffset <= loadMoreGifsBottomOffset else {
+            return
         }
+        guard !loadStatus else {
+            return
+        }
+        loadStatus = true
+        loadingStateView.isHidden = false
+        getNextGifsFromServer()
     }
 
     private func createAlert(title: String, message: String){
