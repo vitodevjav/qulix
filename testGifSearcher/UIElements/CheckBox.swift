@@ -6,13 +6,9 @@ class CheckBox: UIButton {
     let passiveColor = UIColor.init(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
     let activeColor = UIColor.init(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
 
-    var isChecked: Bool = false{
+    var isChecked: Bool = true {
         didSet{
-            if isChecked == true {
-                self.backgroundColor = activeColor
-            } else {
-                self.backgroundColor = passiveColor
-            }
+            backgroundColor = isChecked ? passiveColor : activeColor
         }
     }
 

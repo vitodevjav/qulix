@@ -19,7 +19,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <searchBar hidden="YES" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="OK8-cm-orM">
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="OK8-cm-orM">
                                 <rect key="frame" x="16" y="70" width="343" height="56"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
@@ -40,8 +40,27 @@
                                 <rect key="frame" x="16" y="126" width="343" height="541"/>
                                 <color key="backgroundColor" red="0.66422420739999999" green="0.66424006219999998" blue="0.66423153879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="sectionIndexBackgroundColor" red="0.66422420739999999" green="0.66424006219999998" blue="0.66423153879999997" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                <view key="tableFooterView" hidden="YES" contentMode="scaleToFill" id="BFX-2n-qcS">
+                                    <rect key="frame" x="0.0" y="228" width="343" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <subviews>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="KLF-6e-zzH">
+                                            <rect key="frame" x="8" y="0.0" width="37" height="37"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </activityIndicatorView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JSt-2F-gos">
+                                            <rect key="frame" x="53" y="0.0" width="150" height="37"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" red="0.60000002379999995" green="0.60000002379999995" blue="0.60000002379999995" alpha="1" colorSpace="calibratedRGB"/>
+                                </view>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" rowHeight="200" id="T14-Uc-Obh" customClass="GifTableViewCell" customModule="testGifSearcher" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="GifTableViewCell" rowHeight="200" id="T14-Uc-Obh" customClass="GifTableViewCell" customModule="testGifSearcher" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="343" height="200"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="T14-Uc-Obh" id="rUv-oR-Vjk">
@@ -92,6 +111,7 @@
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" red="0.66422420739999999" green="0.66424006219999998" blue="0.66423153879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="OK8-cm-orM" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="70" id="4vI-1Y-Lgh"/>
                             <constraint firstItem="9cU-Lg-88Q" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="5Iq-DC-tbI"/>
@@ -106,17 +126,26 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="OK8-cm-orM" secondAttribute="trailing" constant="16" id="ukg-mz-XXY"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="5xL-og-Vhh" appends="YES" id="NxH-Am-bCG"/>
+                        </connections>
                     </view>
                     <navigationItem key="navigationItem" title="Gif Searcher" id="1sn-hz-5wW"/>
                     <connections>
                         <outlet property="activityIndicator" destination="oT6-D2-IXE" id="hB4-oU-A0U"/>
+                        <outlet property="gifsLoadingStatusView" destination="BFX-2n-qcS" id="3Pz-Xw-Q9t"/>
+                        <outlet property="progressStateInfo" destination="9cU-Lg-88Q" id="0Dl-Rf-oQx"/>
                         <outlet property="searchBar" destination="OK8-cm-orM" id="kpA-sy-hjh"/>
-                        <outlet property="stateInfoView" destination="9cU-Lg-88Q" id="jz6-xJ-6TE"/>
                         <outlet property="tableView" destination="M5D-Nk-Fp2" id="q8l-Lh-141"/>
-                        <segue destination="wzh-Ll-IdW" kind="show" identifier="searchSegue" id="WdR-51-jfL"/>
+                        <segue destination="wzh-Ll-IdW" kind="show" identifier="segueToResultView" id="WdR-51-jfL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="5xL-og-Vhh">
+                    <connections>
+                        <action selector="backgroundTapped:" destination="BYZ-38-t0r" id="xhp-HD-MCw"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="180" y="127"/>
         </scene>
@@ -131,9 +160,28 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="38F-dZ-6hI">
                                 <rect key="frame" x="16" y="124" width="343" height="499"/>
                                 <color key="backgroundColor" red="0.66422420739999999" green="0.66424006219999998" blue="0.66423153879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <color key="sectionIndexBackgroundColor" red="0.66422420739999999" green="0.66424006219999998" blue="0.66423153879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="sectionIndexBackgroundColor" red="0.49803921579999999" green="0.49803921579999999" blue="0.49803921579999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="Jy5-5a-BDh">
+                                    <rect key="frame" x="0.0" y="228" width="343" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <subviews>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="1E3-3F-v19">
+                                            <rect key="frame" x="8" y="0.0" width="37" height="37"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </activityIndicatorView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o15-Zg-GCT">
+                                            <rect key="frame" x="53" y="0.0" width="150" height="37"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" red="0.60000002379999995" green="0.60000002379999995" blue="0.60000002379999995" alpha="1" colorSpace="calibratedRGB"/>
+                                </view>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="searchCell" rowHeight="200" id="yTT-Te-phN" customClass="GifTableViewCell" customModule="testGifSearcher" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="GifTableViewCell" rowHeight="200" id="yTT-Te-phN" customClass="GifTableViewCell" customModule="testGifSearcher" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="343" height="200"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="yTT-Te-phN" id="W9I-h5-1qA">
@@ -223,13 +271,6 @@
                                     <action selector="gCheckBoxStatusIsChanged:" destination="wzh-Ll-IdW" eventType="touchUpInside" id="dsH-4N-kGZ"/>
                                 </connections>
                             </button>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xyl-tF-0R1">
-                                <rect key="frame" x="16" y="323" width="343" height="54"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.66422420739999999" green="0.66424006219999998" blue="0.66423153879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -249,7 +290,9 @@
                     <toolbarItems/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="stateInfoView" destination="Xyl-tF-0R1" id="AL2-iP-sUc"/>
+                        <outlet property="activityIndicator" destination="1E3-3F-v19" id="4uX-qj-gEX"/>
+                        <outlet property="gifsLoadingStatusView" destination="Jy5-5a-BDh" id="jJT-O6-pKT"/>
+                        <outlet property="progressStateInfo" destination="o15-Zg-GCT" id="alc-KU-6eI"/>
                         <outlet property="tableView" destination="38F-dZ-6hI" id="3fy-dK-bP7"/>
                     </connections>
                 </viewController>
