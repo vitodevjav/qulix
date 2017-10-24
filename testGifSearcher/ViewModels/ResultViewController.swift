@@ -2,24 +2,22 @@
 import UIKit
 import SDWebImage
 
+
 class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
 
     var giphyService: GiphyService!
-    private var gifsOnScreenCount = 50
 
     private var result: [GifModel] = []
     private var selectedGifs:[GifModel] = []
     private var searchRequest: String!
-
-    private var yFamilyIsNeeded:Bool = false
-    private var gFamilyIsNeeded:Bool = false
-    private var pgFamilyIsNeeded:Bool = false
-
+    private var yFamilyIsNeeded:Bool = true
+    private var gFamilyIsNeeded:Bool = true
+    private var pgFamilyIsNeeded:Bool = true
     private let loadMoreGifsBottomOffset: CGFloat = 10.0
     private var loadStatus = false
-
     @IBOutlet weak var loadingStateView: UIView!
     @IBOutlet weak var tableView: UITableView!
+
     @IBAction func pgCheckBoxStatusIsChanged(_ sender: Any) {
         pgFamilyIsNeeded = !pgFamilyIsNeeded
         selectGifs()
@@ -52,8 +50,15 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.loadStatus = false
     }
 
-    private func gifsDidLoad(isSuccess: Bool, result: [GifModel]) {
-        self.result += result
+    private func gifsDidLoad(result: [GifModel]?) {
+        if let data = result {
+            self.result += data
+            self.loadingStateView.isHidden = true
+            self.selectGifs()
+        }else {
+            self.createAlert(title: NSLocalizedString("WarningTitle", comment: ""),
+                             message: NSLocalizedString("WarningMessage", comment: ""))
+        }
         selectGifs()
     }
 
@@ -66,8 +71,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         selectedGifs = result
 
         let width = UIScreen.main.bounds.width
-        tableView.rowHeight = width*0.7
-        tableView.reloadData()
+        tableView.rowHeight = width * 0.7
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -75,20 +79,20 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "searchCell", for: indexPath) as! GifTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: GifTableViewCell.identifier,
+                                                 for: indexPath) as! GifTableViewCell
 
-        cell.gifView.sd_setImage(with: URL(string: selectedGifs[indexPath.row].url)!, placeholderImage: UIImage(named: "ImagePlaceHolder"))
-        if (selectedGifs[indexPath.row].trended) {cell.starImageView.image = UIImage(named: "trendedImage")}
+        cell.gifView.sd_setImage(with: URL(string: selectedGifs[indexPath.row].url),
+                                 placeholderImage: UIImage(named: "ImagePlaceHolder"))
 
+        if selectedGifs[indexPath.row].isTrended {
+            cell.setTrended()
+        }
         return cell
     }
 
     func getNextGifsFromServer() {
-         giphyService.searchGifsByName(searchRequest, offset: result.count, completion: {(isSuccess:Bool, result:[GifModel])in
-            self.result += result
-            self.loadingStateView.isHidden = true
-            self.selectGifs()
-        })
+         giphyService.searchGifsByName(searchRequest, offset: result.count, completion: gifsDidLoad)
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -107,10 +111,14 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         getNextGifsFromServer()
     }
 
-    private func createAlert(title: String, message: String){
-        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Close", comment: ""), style: UIAlertActionStyle.default, handler: { (action) in
-            alert.dismiss(animated: true, completion: nil)
+    private func createAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message,
+                                      preferredStyle: UIAlertControllerStyle.alert)
+
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Close", comment: ""),
+                                      style: UIAlertActionStyle.default,
+                                      handler: { (action) in
+                                        alert.dismiss(animated: true, completion: nil)
         }))
         self.present(alert,animated: true, completion: nil)
     }

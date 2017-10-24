@@ -3,21 +3,17 @@ import Foundation
 
 class CheckBox: UIButton {
 
-    let passiveColor = UIColor.init(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
-    let activeColor = UIColor.init(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
+    let passiveColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
+    let activeColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
 
-    var isChecked: Bool = false{
-        didSet{
-            if isChecked == true {
-                self.backgroundColor = activeColor
-            } else {
-                self.backgroundColor = passiveColor
-            }
+    var isChecked: Bool = true {
+        didSet {
+            backgroundColor = isChecked ? passiveColor : activeColor
         }
     }
 
     override func awakeFromNib() {
-        self.addTarget(self, action:#selector(buttonClicked(sender:)), for: UIControlEvents.touchUpInside)
+        self.addTarget(self, action: #selector(buttonClicked(sender: )), for: UIControlEvents.touchUpInside)
         self.isChecked = false
     }
 

@@ -19,7 +19,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <searchBar hidden="YES" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="OK8-cm-orM">
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="OK8-cm-orM">
                                 <rect key="frame" x="16" y="70" width="343" height="56"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
@@ -60,7 +60,7 @@
                                     <color key="backgroundColor" red="0.60000002379999995" green="0.60000002379999995" blue="0.60000002379999995" alpha="1" colorSpace="calibratedRGB"/>
                                 </view>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" rowHeight="200" id="T14-Uc-Obh" customClass="GifTableViewCell" customModule="testGifSearcher" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="GifTableViewCell" rowHeight="200" id="T14-Uc-Obh" customClass="GifTableViewCell" customModule="testGifSearcher" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="343" height="200"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="T14-Uc-Obh" id="rUv-oR-Vjk">
@@ -75,7 +75,7 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="343" height="49"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <subviews>
-                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IVY-BY-2lG" customClass="FLAnimatedImageView">
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="trendedImage" translatesAutoresizingMaskIntoConstraints="NO" id="IVY-BY-2lG" customClass="FLAnimatedImageView">
                                                             <rect key="frame" x="0.0" y="0.0" width="52" height="49"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         </imageView>
@@ -111,6 +111,7 @@
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" red="0.66422420739999999" green="0.66424006219999998" blue="0.66423153879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="OK8-cm-orM" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="70" id="4vI-1Y-Lgh"/>
                             <constraint firstItem="9cU-Lg-88Q" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="5Iq-DC-tbI"/>
@@ -125,18 +126,25 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="OK8-cm-orM" secondAttribute="trailing" constant="16" id="ukg-mz-XXY"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="5xL-og-Vhh" appends="YES" id="NxH-Am-bCG"/>
+                        </connections>
                     </view>
                     <navigationItem key="navigationItem" title="Gif Searcher" id="1sn-hz-5wW"/>
                     <connections>
                         <outlet property="activityIndicator" destination="oT6-D2-IXE" id="hB4-oU-A0U"/>
                         <outlet property="loadingStateView" destination="VaQ-dV-nOp" id="6lu-eU-dL8"/>
                         <outlet property="searchBar" destination="OK8-cm-orM" id="kpA-sy-hjh"/>
-                        <outlet property="stateInfoView" destination="9cU-Lg-88Q" id="jz6-xJ-6TE"/>
                         <outlet property="tableView" destination="M5D-Nk-Fp2" id="q8l-Lh-141"/>
-                        <segue destination="wzh-Ll-IdW" kind="show" identifier="searchSegue" id="WdR-51-jfL"/>
+                        <segue destination="wzh-Ll-IdW" kind="show" identifier="segueToResultView" id="WdR-51-jfL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="5xL-og-Vhh">
+                    <connections>
+                        <action selector="backgroundTapped:" destination="BYZ-38-t0r" id="xhp-HD-MCw"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="180" y="126.38680659670166"/>
         </scene>
@@ -172,7 +180,7 @@
                                     <color key="backgroundColor" red="0.60000002379999995" green="0.60000002379999995" blue="0.60000002379999995" alpha="1" colorSpace="calibratedRGB"/>
                                 </view>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="searchCell" rowHeight="200" id="yTT-Te-phN" customClass="GifTableViewCell" customModule="testGifSearcher" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="GifTableViewCell" rowHeight="200" id="yTT-Te-phN" customClass="GifTableViewCell" customModule="testGifSearcher" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="343" height="200"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="yTT-Te-phN" id="W9I-h5-1qA">
@@ -188,7 +196,7 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="52" height="49"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <subviews>
-                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RJc-yO-Afn" customClass="FLAnimatedImageView">
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="trendedImage" translatesAutoresizingMaskIntoConstraints="NO" id="RJc-yO-Afn" customClass="FLAnimatedImageView">
                                                             <rect key="frame" x="0.0" y="0.0" width="52" height="49"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         </imageView>
@@ -306,4 +314,7 @@
             <point key="canvasLocation" x="-617" y="128"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="trendedImage" width="256" height="256"/>
+    </resources>
 </document>

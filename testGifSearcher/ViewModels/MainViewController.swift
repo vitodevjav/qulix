@@ -2,84 +2,88 @@ import UIKit
 import Alamofire
 import SDWebImage
 
-class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource{
+class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
 
-    private let searchSegueIdentifier = "searchSegue"
-
+    private let segueToResultView = "segueToResultView"
     private let giphyService = GiphyService()
+    private let gifPlaceholder = UIImage(named: "ImagePlaceHolder")
 
-    @IBOutlet weak var stateInfoView: UILabel!
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-
-
     @IBOutlet weak var loadingStateView: UIView!
     private var loadStatus = false
-    private var gifsOnScreenCount = 50
     private var trendedGifsOffset = 0
     private let loadMoreGifsBottomOffset: CGFloat = 10.0
-    private var trendingGifs: [GifModel] = []
-    private var searchResult: [GifModel] = []
+    private var trendedGifs: [GifModel] = []
+    private var refreshControl = UIRefreshControl()
 
+    //MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        let refreshTitle = NSLocalizedString("Loading", comment: "")
 
-        stateInfoView.text = NSLocalizedString("Loading", comment: "")
-        stateInfoView.isHidden = false
+        refreshControl.attributedTitle = NSAttributedString(string: refreshTitle)
+        refreshControl.addTarget(self, action: #selector(refreshTrendedGifs),
+                                 for: UIControlEvents.valueChanged)
+        tableView.addSubview(refreshControl)
 
-        giphyService.returnTrendingGifs(offset: trendingGifs.count, completion: {(isSuccess: Bool, result: [GifModel]) in
-            self.gifsAreLoadedCompletionHandler(isSuccess, result)
-        })
+        giphyService.returnTrendingGifs(offset: trendedGifs.count, completion: trendedGifsDidLoad)
+
         let width = UIScreen.main.bounds.width
-        tableView.rowHeight = width*0.7
-    }
-
-    private func gifsAreLoadedCompletionHandler(_ isSuccess:Bool,_ result:[GifModel]){
-        if isSuccess {
-            trendingGifs = result
-            tableView.reloadData()
-            
-            activityIndicator.isHidden = true
-            searchBar.isHidden = false
-            stateInfoView.isHidden = true
-            tableView.isHidden = false
-        }else {
-            self.createAlert(title: NSLocalizedString("WarningTitle", comment: ""), message: NSLocalizedString("WarningMessage", comment: ""))
-        }
+        tableView.rowHeight = width * 0.7
     }
 
     func getNextGifsFromServer() {
-        giphyService.returnTrendingGifs(offset: trendingGifs.count, completion: {(isSuccess: Bool, result: [GifModel]) in
-            self.trendingGifs += result
-            self.loadingStateView.isHidden = true
-            self.tableView.reloadData()
-            self.loadStatus = false
-        })
+        giphyService.returnTrendingGifs(offset: trendedGifs.count, completion: trendedGifsDidLoad)
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let destination = segue.destination as! ResultViewController
-        destination.giphyService = giphyService
-        destination.title = self.searchBar.text!
+
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        hideTableView(false)
     }
 
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        performSegue(withIdentifier: searchSegueIdentifier, sender: self)
-    }
-
+    //MARK: - TableView delegate's methods
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return trendingGifs.count
+        return trendedGifs.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! GifTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: GifTableViewCell.identifier,
+                                                 for: indexPath) as! GifTableViewCell
 
-        cell.gifView.sd_setImage(with: URL(string: trendingGifs[indexPath.row].url)!, placeholderImage: UIImage(named: "ImagePlaceHolder"))
-        if (trendingGifs[indexPath.row].trended) {cell.starImageView.image = UIImage(named: "trendedImage")}
-
+        cell.gifView.sd_setImage(with: URL(string: trendedGifs[indexPath.row].url),
+                                 placeholderImage: gifPlaceholder)
+        cell.setTrended()
         return cell
+
     }
+
+    //MARK: - Actions
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        performSegue(withIdentifier: segueToResultView, sender: self)
+        hideTableView(true)
+        view.endEditing(false)
+    }
+
+    @IBAction func backgroundTapped(_ sender: Any) {
+        view.endEditing(false)
+    }
+
+    //MARK: - Prepare for transition
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destination = segue.destination as! ResultViewController
+        destination.giphyService = giphyService
+        guard let searchRequest = searchBar.text else {
+            self.createAlert(title: NSLocalizedString("WarningTitle", comment: ""),
+                             message: NSLocalizedString("WarningMessage", comment: ""))
+            return
+        }
+        destination.title = searchRequest
+    }
+
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let currentOffset = scrollView.contentOffset.y
@@ -97,16 +101,51 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         getNextGifsFromServer()
     }
 
-    private func createAlert(title: String, message: String){
-        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Close", comment: ""), style: UIAlertActionStyle.default, handler: { (action) in
-            alert.dismiss(animated: true, completion: nil)
-                self.tableView.isHidden = false
-                self.stateInfoView.isHidden = true
-                self.activityIndicator.isHidden = true
+    //MARK: - Event handlers
+    private func trendedGifsDidLoad(_ result:[GifModel]?) {
+        if let data = result {
+            trendedGifs += data
+            self.tableView.reloadData()
+            hideTableView(false)
+        }else {
+            self.createAlert(title: NSLocalizedString("WarningTitle", comment: ""),
+                             message: NSLocalizedString("WarningMessage", comment: ""))
+        }
+    }
 
+
+    //MARK: - Updating view content
+    @objc private func refreshTrendedGifs() {
+            self.tableView.reloadData()
+            self.refreshControl.endRefreshing()
+    }
+
+    private func refreshTrendedGifsAsync (completion: @escaping () -> Void) {
+        DispatchQueue.global().async {
+            self.giphyService.returnTrendingGifs(offset: self.trendedGifs.count, completion: self.trendedGifsDidLoad)
+            completion()
+        }
+    }
+
+    //MARK: - Creating alerts
+    private func createAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message,
+                                      preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Close", comment: ""),
+                                      style: .default,
+                                      handler: {(action) in
+                                        alert.dismiss(animated: true, completion: nil)
+                                        self.hideTableView(false)
         }))
-        self.present(alert,animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
+    }
+
+    //MARK: - Switching view states
+    private func hideTableView (_ isHidden: Bool) {
+            loadingStateView.isHidden = !isHidden
+            tableView.isHidden = isHidden
+            activityIndicator.isHidden = !isHidden
+            loadStatus = isHidden
     }
 }
 
