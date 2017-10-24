@@ -7,7 +7,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     private let segueToResultView = "segueToResultView"
     private let giphyService = GiphyService()
     private let gifPlaceholder = UIImage(named: "ImagePlaceHolder")
-    private let loadMoreGifsScrollOffset:CGFloat = -10.0
+    private let loadMoreGifsScrollOffset:CGFloat = 10.0
     private let gifsCountPerRequest = 20
 
     @IBOutlet weak var gifsLoadingStatusView: UIView!
@@ -37,7 +37,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         giphyService.returnTrendingGifs(completion: self.trendedGifsDidLoad)
 
         let width = UIScreen.main.bounds.width
-        tableView.rowHeight = width*0.7
+        tableView.rowHeight = width * 0.7
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -65,7 +65,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         let deltaOffset = maximumOffset - currentOffset
 
-        guard deltaOffset <= loadMoreGifsScrollOffset else {
+        guard deltaOffset <= -loadMoreGifsScrollOffset else {
             return
         }
         guard !loadStatus else {
@@ -127,10 +127,8 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
     }
 
     private func gifsDidLoad() {
-        DispatchQueue.main.async {
-            self.showGifsLoadingStatusView(false)
-            self.tableView.reloadData()
-        }
+        self.showGifsLoadingStatusView(false)
+        self.tableView.reloadData()
     }
 
     //MARK: - Updating view content
@@ -157,7 +155,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, UITableViewDele
         let alert = UIAlertController(title: title, message: message,
                                       preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: NSLocalizedString("Close", comment: ""),
-                                      style: UIAlertActionStyle.default,
+                                      style: .default,
                                       handler: { (action) in
                                         alert.dismiss(animated: true, completion: nil)
                                         self.hideTableView(false)

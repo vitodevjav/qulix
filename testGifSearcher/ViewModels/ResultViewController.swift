@@ -11,7 +11,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private var gFamilyIsNeeded:Bool = true
     private var pgFamilyIsNeeded:Bool = true
     private var loadStatus = false
-    private let loadMoreGifsScrollOffset:CGFloat = -10.0
+    private let loadMoreGifsScrollOffset:CGFloat = 10.0
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
@@ -39,8 +39,9 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
         showGifsLoadingStatusView(false)
         progressStateInfo.text = NSLocalizedString("Loading", comment: "")
+
         let width = UIScreen.main.bounds.width
-        tableView.rowHeight = width*0.7
+        tableView.rowHeight = width * 0.7
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -65,7 +66,7 @@ class ResultViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         let deltaOffset = maximumOffset - currentOffset
 
-        guard deltaOffset <= loadMoreGifsScrollOffset else {
+        guard deltaOffset <= -loadMoreGifsScrollOffset else {
             return
         }
         guard !loadStatus else {

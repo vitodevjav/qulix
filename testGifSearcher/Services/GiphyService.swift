@@ -18,9 +18,9 @@ class GiphyService {
                   let trended = (data["trending_datetime"] as? String)?.isEmpty,
                   let family = data["rating"] as? String,
                   let url = fixedSizeGif["url"] as? String else {
-                return []
+                continue
             }
-            gifArray.append(GifModel(url: url,trended: trended,family: family))
+            gifArray.append(GifModel(url: url, trended: trended, family: family))
         }
         return gifArray
     }
@@ -28,30 +28,27 @@ class GiphyService {
     public func returnTrendingGifs(completion:@escaping([GifModel]?) -> Void){
         let urlString = "https://api.giphy.com/v1/gifs/trending?api_key=\(keyApi)&limit=\(self.gifsCountToReturn)"
         
-        Alamofire.request(urlString, method: .get, parameters: nil,
-                          encoding: JSONEncoding.default)
-            .responseJSON { response in
-                guard let json = response.result.value as? [String: Any] else {
-                    completion(nil)
-                    return
-                }
-                let gifArray  = self.parseJsonToGifArray(json)
-                completion(gifArray)
+        Alamofire.request(urlString).responseJSON { response in
+            guard let json = response.result.value as? [String: Any] else {
+                completion(nil)
+                return
             }
+            let gifArray  = self.parseJsonToGifArray(json)
+            completion(gifArray)
+        }
     }
 
     public func searchGifsByName(_ name:String, completion:@escaping([GifModel]?) -> Void){
         let httpName = name.replacingOccurrences(of: " ", with: "+")
         let urlString = "https://api.giphy.com/v1/gifs/search?q=\(httpName)&api_key=\(keyApi)&limit=\(gifsCountToReturn)"
 
-        Alamofire.request(urlString, method: .get, parameters: nil,encoding: JSONEncoding.default)
-            .responseJSON { response in
-                guard let json = response.result.value as? [String: Any] else {
-                    completion(nil)
-                    return
-                }
-                let gifArray  = self.parseJsonToGifArray(json)
-                completion(gifArray)
+        Alamofire.request(urlString).responseJSON { response in
+            guard let json = response.result.value as? [String: Any] else {
+                completion(nil)
+                return
+            }
+            let gifArray  = self.parseJsonToGifArray(json)
+            completion(gifArray)
         }
     }
 }
