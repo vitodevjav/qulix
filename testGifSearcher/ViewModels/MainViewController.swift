@@ -2,66 +2,45 @@ import UIKit
 import Alamofire
 import SDWebImage
 
-class MainViewController: UIViewController {
+class MainViewController: UIViewController{
 
     private let segueToResultView = "segueToResultView"
     private let giphyService = GiphyService()
     private let gifPlaceholder = UIImage(named: "ImagePlaceHolder")
-
-    @IBOutlet weak var searchBar: UISearchBar!
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var loadingStateView: UIView!
-
-    private var isLoading = false
+    private var isLoading = true
     private let loadingTriggerOffset: CGFloat = 0.0
     private var trendedGifs: [GifModel] = []
-    private var refreshControl = UIRefreshControl()
+    var trendedGifsView = TrendedGifsView(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        let refreshTitle = NSLocalizedString("Loading", comment: "")
-        refreshControl.attributedTitle = NSAttributedString(string: refreshTitle)
-        refreshControl.addTarget(self, action: #selector(refreshTrendedGifs), for: .valueChanged)
-        tableView.addSubview(refreshControl)
+        view = trendedGifsView
+        title = NSLocalizedString("gifSearcher", comment: "")
+        trendedGifsView.tableViewDelegate = self
+        trendedGifsView.searchBarDelegate = self
+        trendedGifsView.dataSource = self
+        let refreshTitle = NSLocalizedString("loading", comment: "")
+        trendedGifsView.refreshControl.attributedTitle = NSAttributedString(string: refreshTitle)
+        trendedGifsView.refreshControl.addTarget(self, action: #selector(refreshTrendedGifs), for: .valueChanged)
 
         giphyService.loadTrendingGifs(offset: trendedGifs.count, completion: trendedGifsDidLoad)
-
-        let width = UIScreen.main.bounds.width
-        tableView.rowHeight = width * 0.7
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        showLoadingView(false)
-    }
-
-    @IBAction func backgroundTapped(_ sender: Any) {
-        view.endEditing(false)
-    }
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let destination = segue.destination as! ResultViewController
-        destination.giphyService = giphyService
-        guard let searchRequest = searchBar.text else {
-            self.createAlert(title: NSLocalizedString("WarningTitle", comment: ""),
-                             message: NSLocalizedString("WarningMessage", comment: ""))
-            return
-        }
-        destination.searchRequest = searchRequest
+        trendedGifsView.hideLoadingView()
     }
 
     private func trendedGifsDidLoad(result: [GifModel]?) {
-        refreshControl.endRefreshing()
         guard let data = result else {
-            self.createAlert(title: NSLocalizedString("warningTitle", comment: ""),
+            createAlert(title: NSLocalizedString("warningTitle", comment: ""),
                              message: NSLocalizedString("serverError", comment: ""))
             return
         }
         trendedGifs += data
-        self.tableView.reloadData()
-        showLoadingView(false)
+        trendedGifsView.reloadData()
+        trendedGifsView.hideLoadingView()
+        isLoading = false
     }
 
     @objc func refreshTrendedGifs() {
@@ -72,34 +51,30 @@ class MainViewController: UIViewController {
     }
 
     func loadNextGifsFromServer() {
+        trendedGifsView.showLoadingView()
         giphyService.loadTrendingGifs(offset: trendedGifs.count, completion: trendedGifsDidLoad)
     }
 
     private func createAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message,
                                       preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("close", comment: ""),
-                                      style: .default,
-                                      handler: {(action) in
-                                        alert.dismiss(animated: true, completion: nil)
-                                        self.showLoadingView(false)
-        }))
-        self.present(alert, animated: true, completion: nil)
-    }
 
-    private func showLoadingView (_ isShowing: Bool) {
-            loadingStateView.isHidden = !isShowing
-            tableView.isHidden = isShowing
-            activityIndicator.isHidden = !isShowing
-            isLoading = isShowing
+        let action = UIAlertAction(title: NSLocalizedString("close", comment: ""), style: .cancel)
+        alert.addAction(action)
+        self.present(alert, animated: true, completion: nil)
     }
 }
 
 // MARK: - UISearchBarDelegate
 extension MainViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        performSegue(withIdentifier: segueToResultView, sender: self)
-        showLoadingView(true)
+        guard let searchRequest = searchBar.text else {
+            createAlert(title: "warningTitle", message: "badRequest")
+            return
+        }
+        navigationController?.pushViewController(ResultViewController(giphyService: giphyService, searchRequest: searchRequest), animated: true)
+//        performSegue(withIdentifier: segueToResultView, sender: self)
+        trendedGifsView.showLoadingView()
         view.endEditing(false)
     }
 }
@@ -121,7 +96,7 @@ extension MainViewController: UITableViewDataSource {
     }
 }
 
-// MARK: - UITableViewDataSource
+// MARK: - UITableViewDelegate
 extension MainViewController: UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let currentOffset = scrollView.contentOffset.y
@@ -132,7 +107,6 @@ extension MainViewController: UITableViewDelegate {
             return
         }
         isLoading = true
-        loadingStateView.isHidden = false
         loadNextGifsFromServer()
     }
 }

@@ -8,5 +8,7 @@
 
 "warningTitle" = "Sorry..";
 "serverError" = "Error has been occured. ";
-"bad request" = "Please, enter a correct request. ";
+"badRequest" = "Please, enter a correct request. ";
 "close" = "Close";
+"loading" = "Loading";
+"gifSearcher" = "GifSearcher";

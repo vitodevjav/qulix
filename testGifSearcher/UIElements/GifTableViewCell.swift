@@ -1,20 +1,49 @@
 import UIKit
 import SDWebImage
 
-@IBDesignable
 class GifTableViewCell: UITableViewCell {
+
+    private let trendedMarkSize: CGFloat = 50
     static let identifier = "GifTableViewCell"
     private let trendedMarkImage = UIImage(named: "trendedImage")
-    @IBOutlet weak var isTrendedMarkerView: UIView!
-    @IBOutlet weak var gifView: FLAnimatedImageView!
-    @IBOutlet weak var starImageView: UIImageView!
+    var gifView = FLAnimatedImageView()
+    var starImageView = UIImageView()
+
+
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+
+        starImageView.image = trendedMarkImage
+
+        addSubview(gifView)
+        addSubview(starImageView)
+    }
+
+    override func layoutSubviews() {
+        gifView.translatesAutoresizingMaskIntoConstraints = false
+        gifView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        gifView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        gifView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        gifView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+
+        starImageView.translatesAutoresizingMaskIntoConstraints = false
+        starImageView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        starImageView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        starImageView.widthAnchor.constraint(equalToConstant: trendedMarkSize).isActive = true
+        starImageView.heightAnchor.constraint(equalToConstant: trendedMarkSize).isActive = true
+    }
+
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        isTrendedMarkerView.isHidden = true
+        starImageView.isHidden = true
     }
 
     public func setTrendedMark() {
-        isTrendedMarkerView.isHidden = false
+        starImageView.isHidden = false
     }
 }
