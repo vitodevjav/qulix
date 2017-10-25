@@ -14,7 +14,7 @@ class GifTableViewCell: UITableViewCell {
         isTrendedMarkerView.isHidden = true
     }
 
-    public func setTrended() {
+    public func setTrendedMark() {
         isTrendedMarkerView.isHidden = false
     }
 }
