@@ -3,11 +3,11 @@ import Foundation
 class GifModel {
     var url: String
     var isTrended: Bool
-    var family: String
+    var rating: String
 
-    init(url: String, trended: Bool, family: String) {
+    init(url: String, trended: Bool, rating: String) {
         self.url = url
         self.isTrended = trended
-        self.family = family
+        self.rating = rating
     }
 }
