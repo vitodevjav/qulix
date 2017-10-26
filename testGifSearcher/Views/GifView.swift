@@ -42,6 +42,9 @@ class GifView: UIView {
 
         customizeTableView()
         customizeActivityIndicator()
+
+        createActivityIndicatorConstraints()
+        createTableViewConstraints()
     }
 
     func customizeActivityIndicator() {
@@ -53,7 +56,22 @@ class GifView: UIView {
     func customizeTableView() {
         tableView.backgroundColor = UIColor.darkGray
         tableView.register(GifTableViewCell.self, forCellReuseIdentifier: GifTableViewCell.identifier)
-        
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 200
+    }
+
+    func createTableViewConstraints() {
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor).isActive = true
+        tableView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        tableView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+    }
+
+    func createActivityIndicatorConstraints() {
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicator.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        activityIndicator.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
 
     func reloadData() {

@@ -8,16 +8,31 @@
 import Foundation
 import UIKit
 
-class TrendedGifsView: GifView {
+class TrendedGifsView: UIView {
 
     private var searchBarHeightConstant: CGFloat = 60.0
     private var isLoadingViewHeightConstant: CGFloat = 30.0
     private var isLoadingViewWidthConstant: CGFloat = 200.0
 
+    var tableView = UITableView()
     var searchBar = UISearchBar()
+    var activityIndicator = UIActivityIndicatorView()
     var isLoadingLabel = UILabel()
+    var refreshControl = UIRefreshControl()
 
-    weak var searchBarDelegate: UISearchBarDelegate? {
+    var tableViewDelegate: UITableViewDelegate? {
+        didSet {
+            tableView.delegate = tableViewDelegate
+        }
+    }
+
+    var dataSource: UITableViewDataSource? {
+        didSet {
+            tableView.dataSource = dataSource
+        }
+    }
+
+    var searchBarDelegate: UISearchBarDelegate? {
         didSet {
             searchBar.delegate = searchBarDelegate
         }
@@ -30,10 +45,15 @@ class TrendedGifsView: GifView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
+        addSubview(tableView)
         addSubview(searchBar)
+        addSubview(activityIndicator)
         addSubview(isLoadingLabel)
+        tableView.addSubview(refreshControl)
 
         customizeSearchBar()
+        customizeTableView()
+        customizeActivityIndicator()
         customizeLabel()
 
         createSearchBarConstraints()
@@ -45,11 +65,27 @@ class TrendedGifsView: GifView {
     func customizeLabel() {
         isLoadingLabel.text = NSLocalizedString("loading", comment: "")
         isLoadingLabel.font = UIFont(name: isLoadingLabel.font.fontName, size: 30)
-        isLoadingLabel.textAlignment = .center
     }
 
     func customizeSearchBar() {
         searchBar.placeholder = NSLocalizedString("Search", comment: "")
+    }
+
+    func customizeActivityIndicator() {
+        activityIndicator.activityIndicatorViewStyle = .whiteLarge
+        activityIndicator.color = UIColor.black
+        activityIndicator.hidesWhenStopped = true
+    }
+
+    func customizeTableView() {
+        tableView.backgroundColor = UIColor.darkGray
+        tableView.register(GifTableViewCell.self, forCellReuseIdentifier: GifTableViewCell.identifier)
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 140
+    }
+
+    func reloadData() {
+        tableView.reloadData()
     }
 
     func createSearchBarConstraints() {
@@ -82,12 +118,13 @@ class TrendedGifsView: GifView {
         isLoadingLabel.heightAnchor.constraint(equalToConstant: isLoadingViewHeightConstant).isActive = true
     }
 
-    override func showLoadingView(_ isShowing: Bool) {
-        super.showLoadingView(isShowing)
+    func showLoadingView(_ isShowing: Bool) {
         isLoadingLabel.isHidden = !isShowing
+        if isShowing {
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicator.stopAnimating()
+            refreshControl.endRefreshing()
+        }
     }
 }
-
-
-
-

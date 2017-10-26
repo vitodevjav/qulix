@@ -11,7 +11,6 @@ class GifTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setConstraints()
 
         starImageView.image = trendedMarkImage
 
@@ -20,10 +19,6 @@ class GifTableViewCell: UITableViewCell {
 
         createGifViewConstraints()
         createStarImageViewConstraints()
-    }
-
-    func setConstraints() {
-        heightAnchor.constraint(equalTo: widthAnchor, multiplier: 0.7).isActive = true
     }
 
     private func createGifViewConstraints() {
