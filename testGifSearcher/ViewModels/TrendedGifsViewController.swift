@@ -2,7 +2,7 @@ import UIKit
 import Alamofire
 import SDWebImage
 
-class MainViewController: UIViewController{
+class TrendedGifsViewController: UIViewController {
 
     private let segueToResultView = "segueToResultView"
     private let giphyService = GiphyService()
@@ -10,11 +10,16 @@ class MainViewController: UIViewController{
     private var isLoading = true
     private let loadingTriggerOffset: CGFloat = 0.0
     private var trendedGifs: [GifModel] = []
-    var trendedGifsView = TrendedGifsView(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
+    var trendedGifsView = TrendedGifsView()
+
+    override func loadView() {
+        super.loadView()
+        view = trendedGifsView
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view = trendedGifsView
+
         title = NSLocalizedString("gifSearcher", comment: "")
         trendedGifsView.tableViewDelegate = self
         trendedGifsView.searchBarDelegate = self
@@ -24,11 +29,6 @@ class MainViewController: UIViewController{
         trendedGifsView.refreshControl.addTarget(self, action: #selector(refreshTrendedGifs), for: .valueChanged)
 
         giphyService.loadTrendingGifs(offset: trendedGifs.count, completion: trendedGifsDidLoad)
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        trendedGifsView.hideLoadingView()
     }
 
     private func trendedGifsDidLoad(result: [GifModel]?) {
@@ -66,21 +66,20 @@ class MainViewController: UIViewController{
 }
 
 // MARK: - UISearchBarDelegate
-extension MainViewController: UISearchBarDelegate {
+extension TrendedGifsViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let searchRequest = searchBar.text else {
             createAlert(title: "warningTitle", message: "badRequest")
             return
         }
-        navigationController?.pushViewController(ResultViewController(giphyService: giphyService, searchRequest: searchRequest), animated: true)
-//        performSegue(withIdentifier: segueToResultView, sender: self)
-        trendedGifsView.showLoadingView()
+        let resultController = ResultViewController(giphyService: giphyService, searchRequest: searchRequest)
+        navigationController?.pushViewController(resultController,animated: true)
         view.endEditing(false)
     }
 }
 
 // MARK: - UITableViewDataSource
-extension MainViewController: UITableViewDataSource {
+extension TrendedGifsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return trendedGifs.count
     }
@@ -97,7 +96,7 @@ extension MainViewController: UITableViewDataSource {
 }
 
 // MARK: - UITableViewDelegate
-extension MainViewController: UITableViewDelegate {
+extension TrendedGifsViewController: UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let currentOffset = scrollView.contentOffset.y
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height

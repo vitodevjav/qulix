@@ -38,6 +38,10 @@ class TrendedGifsView: UIView {
         }
     }
 
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
 
@@ -52,7 +56,10 @@ class TrendedGifsView: UIView {
         customizeActivityIndicator()
         customizeLabel()
 
-        layoutSubviews()
+        createSearchBarConstraints()
+        createTableViewConstraints()
+        createActivityIndicatorConstraints()
+        createLoadingLabelConstraints()
     }
 
     func customizeLabel() {
@@ -73,32 +80,35 @@ class TrendedGifsView: UIView {
     func customizeTableView() {
         tableView.backgroundColor = UIColor.darkGray
         tableView.register(GifTableViewCell.self, forCellReuseIdentifier: GifTableViewCell.identifier)
-        tableView.rowHeight = UIScreen.main.bounds.width * 0.7
-        tableView.estimatedRowHeight = 0
-
     }
 
     func reloadData() {
         tableView.reloadData()
     }
 
-    override func layoutSubviews() {
+    func createSearchBarConstraints() {
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         searchBar.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor).isActive = true
         searchBar.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         searchBar.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         searchBar.heightAnchor.constraint(equalToConstant: searchBarHeightConstant).isActive = true
+    }
 
+    func createTableViewConstraints() {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor).isActive = true
         tableView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         tableView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         tableView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+    }
 
+    func createActivityIndicatorConstraints() {
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         activityIndicator.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         activityIndicator.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+    }
 
+    func createLoadingLabelConstraints() {
         isLoadingLabel.translatesAutoresizingMaskIntoConstraints = false
         isLoadingLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         isLoadingLabel.topAnchor.constraint(equalTo: activityIndicator.bottomAnchor).isActive = true
@@ -115,10 +125,6 @@ class TrendedGifsView: UIView {
         activityIndicator.stopAnimating()
         isLoadingLabel.isHidden = true
         refreshControl.endRefreshing()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
 
