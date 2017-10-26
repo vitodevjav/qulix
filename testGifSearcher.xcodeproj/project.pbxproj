@@ -8,10 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		75ECC1C21FA08614001FADE9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 75ECC1C11FA08614001FADE9 /* Localizable.strings */; };
-		75ECC1C41FA09C3C001FADE9 /* TrendedGifsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ECC1C31FA09C3C001FADE9 /* TrendedGifsView.swift */; };
-		75ECC1C81FA0D1B2001FADE9 /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ECC1C71FA0D1B2001FADE9 /* ResultView.swift */; };
-		75ECC1CE1FA214E2001FADE9 /* GifView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ECC1CD1FA214E2001FADE9 /* GifView.swift */; };
-		85C21BC91F866B5A0056CA9E /* ResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C21BC81F866B5A0056CA9E /* ResultViewController.swift */; };
+		75ECC1CE1FA214E2001FADE9 /* GifsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ECC1CD1FA214E2001FADE9 /* GifsView.swift */; };
 		85F98F6F1F8621290052A3F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F98F6E1F8621290052A3F0 /* AppDelegate.swift */; };
 		85F98F711F8621290052A3F0 /* TrendedGifsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F98F701F8621290052A3F0 /* TrendedGifsViewController.swift */; };
 		85F98F761F8621290052A3F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 85F98F751F8621290052A3F0 /* Assets.xcassets */; };
@@ -27,10 +24,7 @@
 		3487AE44CB9965BC8D231E35 /* Pods-testGifSearcher.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-testGifSearcher.release.xcconfig"; path = "Pods/Target Support Files/Pods-testGifSearcher/Pods-testGifSearcher.release.xcconfig"; sourceTree = "<group>"; };
 		4214EB7C7A44FA8446C155C0 /* Pods-testGifSearcher.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-testGifSearcher.debug.xcconfig"; path = "Pods/Target Support Files/Pods-testGifSearcher/Pods-testGifSearcher.debug.xcconfig"; sourceTree = "<group>"; };
 		75ECC1C11FA08614001FADE9 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
-		75ECC1C31FA09C3C001FADE9 /* TrendedGifsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendedGifsView.swift; sourceTree = "<group>"; };
-		75ECC1C71FA0D1B2001FADE9 /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
-		75ECC1CD1FA214E2001FADE9 /* GifView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifView.swift; sourceTree = "<group>"; };
-		85C21BC81F866B5A0056CA9E /* ResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultViewController.swift; sourceTree = "<group>"; };
+		75ECC1CD1FA214E2001FADE9 /* GifsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifsView.swift; sourceTree = "<group>"; };
 		85F98F6B1F8621290052A3F0 /* testGifSearcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = testGifSearcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		85F98F6E1F8621290052A3F0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		85F98F701F8621290052A3F0 /* TrendedGifsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendedGifsViewController.swift; sourceTree = "<group>"; };
@@ -75,9 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				85F98F771F8621290052A3F0 /* LaunchScreen.storyboard */,
-				75ECC1C31FA09C3C001FADE9 /* TrendedGifsView.swift */,
-				75ECC1C71FA0D1B2001FADE9 /* ResultView.swift */,
-				75ECC1CD1FA214E2001FADE9 /* GifView.swift */,
+				75ECC1CD1FA214E2001FADE9 /* GifsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -86,7 +78,6 @@
 			isa = PBXGroup;
 			children = (
 				85F98F701F8621290052A3F0 /* TrendedGifsViewController.swift */,
-				85C21BC81F866B5A0056CA9E /* ResultViewController.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -284,14 +275,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				85F98F851F862ECF0052A3F0 /* GifModel.swift in Sources */,
-				75ECC1CE1FA214E2001FADE9 /* GifView.swift in Sources */,
+				75ECC1CE1FA214E2001FADE9 /* GifsView.swift in Sources */,
 				85F98F811F8625920052A3F0 /* GifTableViewCell.swift in Sources */,
-				75ECC1C81FA0D1B2001FADE9 /* ResultView.swift in Sources */,
-				75ECC1C41FA09C3C001FADE9 /* TrendedGifsView.swift in Sources */,
 				85F98F711F8621290052A3F0 /* TrendedGifsViewController.swift in Sources */,
 				85F98F6F1F8621290052A3F0 /* AppDelegate.swift in Sources */,
 				85F98F831F8628A00052A3F0 /* GiphyService.swift in Sources */,
-				85C21BC91F866B5A0056CA9E /* ResultViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
