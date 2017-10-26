@@ -11,7 +11,6 @@
 		75ECC1C41FA09C3C001FADE9 /* TrendedGifsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ECC1C31FA09C3C001FADE9 /* TrendedGifsView.swift */; };
 		75ECC1C81FA0D1B2001FADE9 /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ECC1C71FA0D1B2001FADE9 /* ResultView.swift */; };
 		85C21BC91F866B5A0056CA9E /* ResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C21BC81F866B5A0056CA9E /* ResultViewController.swift */; };
-		85C21BEE1F88FA8D0056CA9E /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C21BED1F88FA8D0056CA9E /* CheckBox.swift */; };
 		85F98F6F1F8621290052A3F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F98F6E1F8621290052A3F0 /* AppDelegate.swift */; };
 		85F98F711F8621290052A3F0 /* TrendedGifsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F98F701F8621290052A3F0 /* TrendedGifsViewController.swift */; };
 		85F98F761F8621290052A3F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 85F98F751F8621290052A3F0 /* Assets.xcassets */; };
@@ -30,7 +29,6 @@
 		75ECC1C31FA09C3C001FADE9 /* TrendedGifsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendedGifsView.swift; sourceTree = "<group>"; };
 		75ECC1C71FA0D1B2001FADE9 /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
 		85C21BC81F866B5A0056CA9E /* ResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultViewController.swift; sourceTree = "<group>"; };
-		85C21BED1F88FA8D0056CA9E /* CheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
 		85F98F6B1F8621290052A3F0 /* testGifSearcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = testGifSearcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		85F98F6E1F8621290052A3F0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		85F98F701F8621290052A3F0 /* TrendedGifsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendedGifsViewController.swift; sourceTree = "<group>"; };
@@ -109,7 +107,6 @@
 		85C21BEF1F8968380056CA9E /* UIElements */ = {
 			isa = PBXGroup;
 			children = (
-				85C21BED1F88FA8D0056CA9E /* CheckBox.swift */,
 				85F98F801F8625920052A3F0 /* GifTableViewCell.swift */,
 			);
 			path = UIElements;
@@ -287,7 +284,6 @@
 				85F98F811F8625920052A3F0 /* GifTableViewCell.swift in Sources */,
 				75ECC1C81FA0D1B2001FADE9 /* ResultView.swift in Sources */,
 				75ECC1C41FA09C3C001FADE9 /* TrendedGifsView.swift in Sources */,
-				85C21BEE1F88FA8D0056CA9E /* CheckBox.swift in Sources */,
 				85F98F711F8621290052A3F0 /* TrendedGifsViewController.swift in Sources */,
 				85F98F6F1F8621290052A3F0 /* AppDelegate.swift in Sources */,
 				85F98F831F8628A00052A3F0 /* GiphyService.swift in Sources */,

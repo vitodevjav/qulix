@@ -71,12 +71,12 @@ class ResultView: UIView {
 
     func customizeActivityIndicator() {
         activityIndicator.activityIndicatorViewStyle = .whiteLarge
-        activityIndicator.backgroundColor = UIColor.black
+        activityIndicator.backgroundColor = .black
         activityIndicator.hidesWhenStopped = true
     }
 
     func customizeTableView() {
-        tableView.backgroundColor = UIColor.darkGray
+        tableView.backgroundColor = .darkGray
         tableView.register(GifTableViewCell.self, forCellReuseIdentifier: GifTableViewCell.identifier)
     }
 

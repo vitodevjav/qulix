@@ -98,6 +98,10 @@ extension ResultViewController: UITableViewDataSource {
         return filteredGifs.count
     }
 
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return CGFloat(filteredGifs[indexPath.row].height)
+    }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: GifTableViewCell.identifier,
                                                  for: indexPath) as! GifTableViewCell

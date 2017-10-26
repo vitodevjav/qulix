@@ -14,13 +14,18 @@ class GiphyService {
         var gifArray: [GifModel]=[]
         for data in dataMap {
             guard let images = data["images"] as? [String: Any],
-                  let fixedSizeGif = images["original"] as? [String: Any],
+                  let original = images["original"] as? [String: Any],
                   let trended = (data["trending_datetime"] as? String)?.isEmpty,
                   let rating = data["rating"] as? String,
-                  let url = fixedSizeGif["url"] as? String else {
+                  let url = original["url"] as? String,
+                  let stringHeight = original["height"] as? String,
+                  let stringWidth = original["width"] as? String,
+                  let height = Int(stringHeight),
+                  let width = Int(stringWidth) else {
                 continue
             }
-            gifArray.append(GifModel(url: url, trended: trended, rating: rating))
+
+            gifArray.append(GifModel(url: url, trended: trended, rating: rating, height: height, width: width))
         }
         return gifArray
     }

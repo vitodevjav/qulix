@@ -31,8 +31,8 @@ class GifTableViewCell: UITableViewCell {
 
     private func createStarImageViewConstraints() {
         starImageView.translatesAutoresizingMaskIntoConstraints = false
-        starImageView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        starImageView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        starImageView.topAnchor.constraint(equalTo: gifView.topAnchor).isActive = true
+        starImageView.leadingAnchor.constraint(equalTo: gifView.leadingAnchor).isActive = true
         starImageView.widthAnchor.constraint(equalToConstant: trendedMarkSize).isActive = true
         starImageView.heightAnchor.constraint(equalToConstant: trendedMarkSize).isActive = true
     }

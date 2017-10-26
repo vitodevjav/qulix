@@ -84,12 +84,15 @@ extension TrendedGifsViewController: UITableViewDataSource {
         return trendedGifs.count
     }
 
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return CGFloat(trendedGifs[indexPath.row].height)
+    }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: GifTableViewCell.identifier,
                                                  for: indexPath) as! GifTableViewCell
 
-        cell.gifView.sd_setImage(with: URL(string: trendedGifs[indexPath.row].url),
-                                 placeholderImage: gifPlaceholder)
+        cell.gifView.sd_setImage(with: URL(string: trendedGifs[indexPath.row].url),placeholderImage: gifPlaceholder)
         cell.setTrendedMark()
         return cell
     }

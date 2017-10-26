@@ -73,12 +73,12 @@ class TrendedGifsView: UIView {
 
     func customizeActivityIndicator() {
         activityIndicator.activityIndicatorViewStyle = .whiteLarge
-        activityIndicator.color = UIColor.black
+        activityIndicator.color = .black
         activityIndicator.hidesWhenStopped = true
     }
 
     func customizeTableView() {
-        tableView.backgroundColor = UIColor.darkGray
+        tableView.backgroundColor = .darkGray
         tableView.register(GifTableViewCell.self, forCellReuseIdentifier: GifTableViewCell.identifier)
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 140
