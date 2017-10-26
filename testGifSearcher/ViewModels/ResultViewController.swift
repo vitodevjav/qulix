@@ -5,87 +5,90 @@ import SDWebImage
 
 class ResultViewController: UIViewController {
 
-    var giphyService: GiphyService!
-    var searchRequest: String!
+    private var giphyService: GiphyService
+    private var searchRequest: String
     private var result: [GifModel] = []
     private var filteredGifs: [GifModel] = []
-    private var yFamilyIsNeeded: Bool = true
-    private var gFamilyIsNeeded: Bool = true
-    private var pgFamilyIsNeeded: Bool = true
     private let getNextGifsFromServerBottomOffset: CGFloat = 0.0
-    private var loadStatus = false
-    @IBOutlet weak var loadingStateView: UIView!
-    @IBOutlet weak var tableView: UITableView!
+    private var isLoading = true
+    private var gifRatings = ["y", "g", "pg"]
+    var resultView = ResultView(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
 
-    @IBAction func pgCheckBoxStatusIsChanged(_ sender: Any) {
-        pgFamilyIsNeeded = !pgFamilyIsNeeded
-        filterGifs()
+    init(giphyService: GiphyService, searchRequest: String) {
+        self.searchRequest = searchRequest
+        self.giphyService = giphyService
+        super.init(nibName: nil, bundle: nil)
     }
 
-    @IBAction func yCheckBoxStatusIsChanged(_ sender: Any) {
-        yFamilyIsNeeded = !yFamilyIsNeeded
-        filterGifs()
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
-    @IBAction func gCheckBoxStatusIsChanged(_ sender: Any) {
-        gFamilyIsNeeded = !gFamilyIsNeeded
-        filterGifs()
+    override func loadView() {
+        super.loadView()
+        view = resultView
     }
 
-    private func filterGifs() {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        resultView.tableViewDelegate = self
+        resultView.dataSource = self
+        resultView.setSegmentedControlWith(array: gifRatings)
+        resultView.segmentedControl.addTarget(self, action: #selector(filterGifs), for: .valueChanged)
+        let refreshTitle = NSLocalizedString("loading", comment: "")
+        resultView.refreshControl.attributedTitle = NSAttributedString(string: refreshTitle)
+        resultView.refreshControl.addTarget(self, action: #selector(refreshGifs), for: .valueChanged)
+        title = searchRequest
+        giphyService.searchGifsByName(searchRequest, offset: result.count, completion: gifsDidLoad)
+    }
+
+    @objc private func filterGifs() {
         filteredGifs.removeAll()
-        for gif in result {
-            if gFamilyIsNeeded, gif.rating.contains("g") {
-                filteredGifs.append(gif)
-            }
-            if yFamilyIsNeeded, gif.rating.contains("y") {
-                filteredGifs.append(gif)
-            }
-            if pgFamilyIsNeeded, gif.rating.contains("pg") {
-                filteredGifs.append(gif)
-            }
+        let segmentedControl = resultView.segmentedControl
+        let selectedRating = segmentedControl.selectedSegmentIndex
+        guard let rating = segmentedControl.titleForSegment(at: selectedRating) else {
+            return
         }
-        tableView.reloadData()
-        self.loadStatus = false
+        for gif in result {
+            guard gif.rating.contains(rating) else {
+                continue
+            }
+            filteredGifs.append(gif)
+        }
+        resultView.reloadData()
+        isLoading = false
     }
 
     private func gifsDidLoad(result: [GifModel]?) {
         if let data = result {
             self.result += data
-            self.loadingStateView.isHidden = true
-            self.filterGifs()
+            filterGifs()
         }else {
-            self.createAlert(title: NSLocalizedString("warningTitle", comment: ""),
+            createAlert(title: NSLocalizedString("warningTitle", comment: ""),
                              message: NSLocalizedString("warningMessage", comment: ""))
         }
+        resultView.showLoadingView(false)
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        if let searchRequest = self.searchRequest {
-            title = searchRequest
-            giphyService.searchGifsByName(searchRequest, offset: result.count, completion: gifsDidLoad)
-        }
-        filteredGifs = result
-
-        let width = UIScreen.main.bounds.width
-        tableView.rowHeight = width * 0.7
-    }
-
-    func loadNextGifsFromServer() {
+    private func loadNextGifsFromServer() {
          giphyService.searchGifsByName(searchRequest, offset: result.count, completion: gifsDidLoad)
+    }
+
+    @objc private func refreshGifs() {
+        isLoading = true
+        result.removeAll()
+        DispatchQueue.global().async {
+            self.giphyService.searchGifsByName(self.searchRequest, offset: self.result.count, completion: self.gifsDidLoad)
+        }
     }
 
     private func createAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message,
                                       preferredStyle: UIAlertControllerStyle.alert)
 
-        alert.addAction(UIAlertAction(title: NSLocalizedString("close", comment: ""),
-                                      style: UIAlertActionStyle.default,
-                                      handler: {(action) in
-                                        alert.dismiss(animated: true, completion: nil)
-        }))
-        self.present(alert,animated: true, completion: nil)
+        let action = UIAlertAction(title: NSLocalizedString("close", comment: ""), style: .cancel)
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
     }
 }
 
@@ -93,6 +96,10 @@ class ResultViewController: UIViewController {
 extension ResultViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return filteredGifs.count
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return CGFloat(filteredGifs[indexPath.row].height)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -109,7 +116,7 @@ extension ResultViewController: UITableViewDataSource {
     }
 }
 
-// MARK: - UITableViewDataSource
+// MARK: - UITableViewDataDelegate
 extension ResultViewController: UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let currentOffset = scrollView.contentOffset.y
@@ -119,11 +126,10 @@ extension ResultViewController: UITableViewDelegate {
         guard deltaOffset <= getNextGifsFromServerBottomOffset else {
             return
         }
-        guard !loadStatus else {
+        guard !isLoading else {
             return
         }
-        loadStatus = true
-        loadingStateView.isHidden = false
+        isLoading = true
         loadNextGifsFromServer()
     }
 }
