@@ -23,18 +23,18 @@ class GifTableViewCell: UITableViewCell {
 
     private func createGifViewConstraints() {
         gifView.translatesAutoresizingMaskIntoConstraints = false
-        gifView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        gifView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-        gifView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        gifView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        NSLayoutConstraint.activate([gifView.topAnchor.constraint(equalTo: topAnchor),
+                                     gifView.leadingAnchor.constraint(equalTo: leadingAnchor),
+                                     gifView.trailingAnchor.constraint(equalTo: trailingAnchor),
+                                     gifView.bottomAnchor.constraint(equalTo: bottomAnchor)])
     }
 
     private func createStarImageViewConstraints() {
         starImageView.translatesAutoresizingMaskIntoConstraints = false
-        starImageView.topAnchor.constraint(equalTo: gifView.topAnchor).isActive = true
-        starImageView.leadingAnchor.constraint(equalTo: gifView.leadingAnchor).isActive = true
-        starImageView.widthAnchor.constraint(equalToConstant: trendedMarkSize).isActive = true
-        starImageView.heightAnchor.constraint(equalToConstant: trendedMarkSize).isActive = true
+        NSLayoutConstraint.activate([starImageView.topAnchor.constraint(equalTo: gifView.topAnchor),
+                                     starImageView.leadingAnchor.constraint(equalTo: gifView.leadingAnchor),
+                                     starImageView.widthAnchor.constraint(equalToConstant: trendedMarkSize),
+                                     starImageView.heightAnchor.constraint(equalToConstant: trendedMarkSize)])
     }
 
     required init?(coder aDecoder: NSCoder) {

@@ -8,29 +8,11 @@
 import Foundation
 import UIKit
 
-class TrendedGifsView: UIView {
+class TrendedGifsView: GifView {
 
     private var searchBarHeightConstant: CGFloat = 60.0
-    private var isLoadingViewHeightConstant: CGFloat = 30.0
-    private var isLoadingViewWidthConstant: CGFloat = 200.0
 
-    var tableView = UITableView()
     var searchBar = UISearchBar()
-    var activityIndicator = UIActivityIndicatorView()
-    var isLoadingLabel = UILabel()
-    var refreshControl = UIRefreshControl()
-
-    var tableViewDelegate: UITableViewDelegate? {
-        didSet {
-            tableView.delegate = tableViewDelegate
-        }
-    }
-
-    var dataSource: UITableViewDataSource? {
-        didSet {
-            tableView.dataSource = dataSource
-        }
-    }
 
     var searchBarDelegate: UISearchBarDelegate? {
         didSet {
@@ -45,86 +27,21 @@ class TrendedGifsView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        addSubview(tableView)
         addSubview(searchBar)
-        addSubview(activityIndicator)
-        addSubview(isLoadingLabel)
-        tableView.addSubview(refreshControl)
-
         customizeSearchBar()
-        customizeTableView()
-        customizeActivityIndicator()
-        customizeLabel()
-
         createSearchBarConstraints()
-        createTableViewConstraints()
-        createActivityIndicatorConstraints()
-        createLoadingLabelConstraints()
+        insertViewBeforeTableView(view: searchBar)
     }
 
-    func customizeLabel() {
-        isLoadingLabel.text = NSLocalizedString("loading", comment: "")
-        isLoadingLabel.font = UIFont(name: isLoadingLabel.font.fontName, size: 30)
-    }
-
-    func customizeSearchBar() {
+    private func customizeSearchBar() {
         searchBar.placeholder = NSLocalizedString("Search", comment: "")
     }
 
-    func customizeActivityIndicator() {
-        activityIndicator.activityIndicatorViewStyle = .whiteLarge
-        activityIndicator.color = .black
-        activityIndicator.hidesWhenStopped = true
-    }
-
-    func customizeTableView() {
-        tableView.backgroundColor = .darkGray
-        tableView.register(GifTableViewCell.self, forCellReuseIdentifier: GifTableViewCell.identifier)
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 140
-    }
-
-    func reloadData() {
-        tableView.reloadData()
-    }
-
-    func createSearchBarConstraints() {
+    private func createSearchBarConstraints() {
         searchBar.translatesAutoresizingMaskIntoConstraints = false
-        searchBar.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor).isActive = true
-        searchBar.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-        searchBar.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        searchBar.heightAnchor.constraint(equalToConstant: searchBarHeightConstant).isActive = true
-    }
-
-    func createTableViewConstraints() {
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor).isActive = true
-        tableView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-        tableView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        tableView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-    }
-
-    func createActivityIndicatorConstraints() {
-        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
-        activityIndicator.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        activityIndicator.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-    }
-
-    func createLoadingLabelConstraints() {
-        isLoadingLabel.translatesAutoresizingMaskIntoConstraints = false
-        isLoadingLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        isLoadingLabel.topAnchor.constraint(equalTo: activityIndicator.bottomAnchor).isActive = true
-        isLoadingLabel.widthAnchor.constraint(equalToConstant: isLoadingViewWidthConstant).isActive = true
-        isLoadingLabel.heightAnchor.constraint(equalToConstant: isLoadingViewHeightConstant).isActive = true
-    }
-
-    func showLoadingView(_ isShowing: Bool) {
-        isLoadingLabel.isHidden = !isShowing
-        if isShowing {
-            activityIndicator.startAnimating()
-        } else {
-            activityIndicator.stopAnimating()
-            refreshControl.endRefreshing()
-        }
+        NSLayoutConstraint.activate([searchBar.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
+                                     searchBar.leadingAnchor.constraint(equalTo: leadingAnchor),
+                                     searchBar.trailingAnchor.constraint(equalTo: trailingAnchor),
+                                     searchBar.heightAnchor.constraint(equalToConstant: searchBarHeightConstant)])
     }
 }

@@ -43,14 +43,14 @@ class TrendedGifsViewController: UIViewController {
         isLoading = false
     }
 
-    @objc func refreshTrendedGifs() {
+    @objc private func refreshTrendedGifs() {
         DispatchQueue.global().async {
             self.giphyService.loadTrendingGifs(offset: self.trendedGifs.count, completion: self.trendedGifsDidLoad)
         }
         trendedGifs.removeAll()
     }
 
-    func loadNextGifsFromServer() {
+    private func loadNextGifsFromServer() {
         trendedGifsView.showLoadingView(true)
         giphyService.loadTrendingGifs(offset: trendedGifs.count, completion: trendedGifsDidLoad)
     }
@@ -73,7 +73,7 @@ extension TrendedGifsViewController: UISearchBarDelegate {
             return
         }
         let resultController = ResultViewController(giphyService: giphyService, searchRequest: searchRequest)
-        navigationController?.pushViewController(resultController,animated: true)
+        navigationController?.pushViewController(resultController, animated: true)
         view.endEditing(false)
     }
 }
@@ -92,7 +92,7 @@ extension TrendedGifsViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: GifTableViewCell.identifier,
                                                  for: indexPath) as! GifTableViewCell
 
-        cell.gifView.sd_setImage(with: URL(string: trendedGifs[indexPath.row].url),placeholderImage: gifPlaceholder)
+        cell.gifView.sd_setImage(with: URL(string: trendedGifs[indexPath.row].url), placeholderImage: gifPlaceholder)
         cell.setTrendedMark()
         return cell
     }

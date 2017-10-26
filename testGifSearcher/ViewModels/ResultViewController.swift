@@ -42,7 +42,7 @@ class ResultViewController: UIViewController {
         giphyService.searchGifsByName(searchRequest, offset: result.count, completion: gifsDidLoad)
     }
 
-    @objc func filterGifs() {
+    @objc private func filterGifs() {
         filteredGifs.removeAll()
         let segmentedControl = resultView.segmentedControl
         let selectedRating = segmentedControl.selectedSegmentIndex
@@ -70,11 +70,11 @@ class ResultViewController: UIViewController {
         resultView.showLoadingView(false)
     }
 
-    func loadNextGifsFromServer() {
+    private func loadNextGifsFromServer() {
          giphyService.searchGifsByName(searchRequest, offset: result.count, completion: gifsDidLoad)
     }
 
-    @objc func refreshGifs() {
+    @objc private func refreshGifs() {
         isLoading = true
         result.removeAll()
         DispatchQueue.global().async {
@@ -88,7 +88,7 @@ class ResultViewController: UIViewController {
 
         let action = UIAlertAction(title: NSLocalizedString("close", comment: ""), style: .cancel)
         alert.addAction(action)
-        present(alert,animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
     }
 }
 
