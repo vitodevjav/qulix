@@ -9,13 +9,13 @@
 import Foundation
 
 class GifView: UIView {
-    var tableViewDelegate: UITableViewDelegate? {
+    weak var tableViewDelegate: UITableViewDelegate? {
         didSet {
             tableView.delegate = tableViewDelegate
         }
     }
 
-    var dataSource: UITableViewDataSource? {
+    weak var dataSource: UITableViewDataSource? {
         didSet {
             tableView.dataSource = dataSource
         }

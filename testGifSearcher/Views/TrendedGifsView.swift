@@ -17,7 +17,7 @@ class TrendedGifsView: GifView {
     var searchBar = UISearchBar()
     var isLoadingLabel = UILabel()
 
-    var searchBarDelegate: UISearchBarDelegate? {
+    weak var searchBarDelegate: UISearchBarDelegate? {
         didSet {
             searchBar.delegate = searchBarDelegate
         }
