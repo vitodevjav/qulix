@@ -53,6 +53,7 @@ class GifView: UIView {
     func customizeTableView() {
         tableView.backgroundColor = UIColor.darkGray
         tableView.register(GifTableViewCell.self, forCellReuseIdentifier: GifTableViewCell.identifier)
+        
     }
 
     func reloadData() {
