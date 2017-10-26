@@ -10,6 +10,7 @@
 		75ECC1C21FA08614001FADE9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 75ECC1C11FA08614001FADE9 /* Localizable.strings */; };
 		75ECC1C41FA09C3C001FADE9 /* TrendedGifsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ECC1C31FA09C3C001FADE9 /* TrendedGifsView.swift */; };
 		75ECC1C81FA0D1B2001FADE9 /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ECC1C71FA0D1B2001FADE9 /* ResultView.swift */; };
+		75ECC1CC1FA1D0DE001FADE9 /* GifView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ECC1CB1FA1D0DE001FADE9 /* GifView.swift */; };
 		85C21BC91F866B5A0056CA9E /* ResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C21BC81F866B5A0056CA9E /* ResultViewController.swift */; };
 		85C21BEE1F88FA8D0056CA9E /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C21BED1F88FA8D0056CA9E /* CheckBox.swift */; };
 		85F98F6F1F8621290052A3F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F98F6E1F8621290052A3F0 /* AppDelegate.swift */; };
@@ -29,6 +30,7 @@
 		75ECC1C11FA08614001FADE9 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		75ECC1C31FA09C3C001FADE9 /* TrendedGifsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendedGifsView.swift; sourceTree = "<group>"; };
 		75ECC1C71FA0D1B2001FADE9 /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
+		75ECC1CB1FA1D0DE001FADE9 /* GifView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifView.swift; sourceTree = "<group>"; };
 		85C21BC81F866B5A0056CA9E /* ResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultViewController.swift; sourceTree = "<group>"; };
 		85C21BED1F88FA8D0056CA9E /* CheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
 		85F98F6B1F8621290052A3F0 /* testGifSearcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = testGifSearcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -77,6 +79,7 @@
 				85F98F771F8621290052A3F0 /* LaunchScreen.storyboard */,
 				75ECC1C31FA09C3C001FADE9 /* TrendedGifsView.swift */,
 				75ECC1C71FA0D1B2001FADE9 /* ResultView.swift */,
+				75ECC1CB1FA1D0DE001FADE9 /* GifView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -288,6 +291,7 @@
 				75ECC1C81FA0D1B2001FADE9 /* ResultView.swift in Sources */,
 				75ECC1C41FA09C3C001FADE9 /* TrendedGifsView.swift in Sources */,
 				85C21BEE1F88FA8D0056CA9E /* CheckBox.swift in Sources */,
+				75ECC1CC1FA1D0DE001FADE9 /* GifView.swift in Sources */,
 				85F98F711F8621290052A3F0 /* TrendedGifsViewController.swift in Sources */,
 				85F98F6F1F8621290052A3F0 /* AppDelegate.swift in Sources */,
 				85F98F831F8628A00052A3F0 /* GiphyService.swift in Sources */,

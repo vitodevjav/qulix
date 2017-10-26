@@ -67,6 +67,7 @@ class ResultViewController: UIViewController {
             createAlert(title: NSLocalizedString("warningTitle", comment: ""),
                              message: NSLocalizedString("warningMessage", comment: ""))
         }
+        resultView.showLoadingView(false)
     }
 
     func loadNextGifsFromServer() {

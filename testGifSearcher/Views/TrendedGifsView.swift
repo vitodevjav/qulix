@@ -8,29 +8,14 @@
 import Foundation
 import UIKit
 
-class TrendedGifsView: UIView {
+class TrendedGifsView: GifView {
 
     private var searchBarHeightConstant: CGFloat = 60.0
     private var isLoadingViewHeightConstant: CGFloat = 30.0
     private var isLoadingViewWidthConstant: CGFloat = 200.0
 
-    var tableView = UITableView()
     var searchBar = UISearchBar()
-    var activityIndicator = UIActivityIndicatorView()
     var isLoadingLabel = UILabel()
-    var refreshControl = UIRefreshControl()
-
-    var tableViewDelegate: UITableViewDelegate? {
-        didSet {
-            tableView.delegate = tableViewDelegate
-        }
-    }
-    
-    var dataSource: UITableViewDataSource? {
-        didSet {
-            tableView.dataSource = dataSource
-        }
-    }
 
     var searchBarDelegate: UISearchBarDelegate? {
         didSet {
@@ -45,15 +30,10 @@ class TrendedGifsView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        addSubview(tableView)
         addSubview(searchBar)
-        addSubview(activityIndicator)
         addSubview(isLoadingLabel)
-        tableView.addSubview(refreshControl)
 
         customizeSearchBar()
-        customizeTableView()
-        customizeActivityIndicator()
         customizeLabel()
 
         createSearchBarConstraints()
@@ -65,25 +45,11 @@ class TrendedGifsView: UIView {
     func customizeLabel() {
         isLoadingLabel.text = NSLocalizedString("loading", comment: "")
         isLoadingLabel.font = UIFont(name: isLoadingLabel.font.fontName, size: 30)
+        isLoadingLabel.textAlignment = .center
     }
 
     func customizeSearchBar() {
         searchBar.placeholder = NSLocalizedString("Search", comment: "")
-    }
-
-    func customizeActivityIndicator() {
-        activityIndicator.activityIndicatorViewStyle = .whiteLarge
-        activityIndicator.color = UIColor.black
-        activityIndicator.hidesWhenStopped = true
-    }
-
-    func customizeTableView() {
-        tableView.backgroundColor = UIColor.darkGray
-        tableView.register(GifTableViewCell.self, forCellReuseIdentifier: GifTableViewCell.identifier)
-    }
-
-    func reloadData() {
-        tableView.reloadData()
     }
 
     func createSearchBarConstraints() {
@@ -116,15 +82,9 @@ class TrendedGifsView: UIView {
         isLoadingLabel.heightAnchor.constraint(equalToConstant: isLoadingViewHeightConstant).isActive = true
     }
 
-    func showLoadingView() {
-        activityIndicator.startAnimating()
-        isLoadingLabel.isHidden = false
-    }
-
-    func hideLoadingView() {
-        activityIndicator.stopAnimating()
-        isLoadingLabel.isHidden = true
-        refreshControl.endRefreshing()
+    override func showLoadingView(_ isShowing: Bool) {
+        super.showLoadingView(isShowing)
+        isLoadingLabel.isHidden = !isShowing
     }
 }
 

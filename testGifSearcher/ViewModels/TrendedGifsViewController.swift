@@ -39,7 +39,7 @@ class TrendedGifsViewController: UIViewController {
         }
         trendedGifs += data
         trendedGifsView.reloadData()
-        trendedGifsView.hideLoadingView()
+        trendedGifsView.showLoadingView(false)
         isLoading = false
     }
 
@@ -51,7 +51,7 @@ class TrendedGifsViewController: UIViewController {
     }
 
     func loadNextGifsFromServer() {
-        trendedGifsView.showLoadingView()
+        trendedGifsView.showLoadingView(true)
         giphyService.loadTrendingGifs(offset: trendedGifs.count, completion: trendedGifsDidLoad)
     }
 

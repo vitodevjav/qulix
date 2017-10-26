@@ -9,24 +9,12 @@
 import Foundation
 import UIKit
 
-class ResultView: UIView {
-    var tableViewDelegate: UITableViewDelegate? {
-        didSet {
-            tableView.delegate = tableViewDelegate
-        }
-    }
+class ResultView: GifView {
 
-    var dataSource: UITableViewDataSource? {
-        didSet {
-            tableView.dataSource = dataSource
-        }
-    }
 
-    var refreshControl = UIRefreshControl()
     private let searchBarHeightConstant: CGFloat = 60.0
     private let segmentedControlHeightConstatnt: CGFloat = 40.0
-    var tableView = UITableView()
-    var activityIndicator = UIActivityIndicatorView()
+
     var segmentedControl = UISegmentedControl()
 
     required init?(coder aDecoder: NSCoder) {
@@ -36,22 +24,14 @@ class ResultView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        addSubview(tableView)
-        addSubview(activityIndicator)
         addSubview(segmentedControl)
         tableView.addSubview(refreshControl)
-        let refreshTitle = NSLocalizedString("loading", comment: "")
-        refreshControl.attributedTitle = NSAttributedString(string: refreshTitle)
 
-        customizeTableView()
-        customizeActivityIndicator()
         customizeSegmentedControl()
 
         createSegmentedControlConstraints()
         createTableViewConstraints()
         createActivityIndicatorConstraints()
-
-        layoutSubviews()
     }
 
     func setSegmentedControlWith(array: [Any]) {
@@ -67,21 +47,6 @@ class ResultView: UIView {
     func customizeSegmentedControl() {
         segmentedControl.backgroundColor = UIColor.white.withAlphaComponent(0.5)
         segmentedControl.tintColor = UIColor.white.withAlphaComponent(0.7)
-    }
-
-    func customizeActivityIndicator() {
-        activityIndicator.activityIndicatorViewStyle = .whiteLarge
-        activityIndicator.backgroundColor = UIColor.black
-        activityIndicator.hidesWhenStopped = true
-    }
-
-    func customizeTableView() {
-        tableView.backgroundColor = UIColor.darkGray
-        tableView.register(GifTableViewCell.self, forCellReuseIdentifier: GifTableViewCell.identifier)
-    }
-
-    func reloadData() {
-        tableView.reloadData()
     }
 
     func createTableViewConstraints() {
@@ -103,13 +68,6 @@ class ResultView: UIView {
         segmentedControl.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor).isActive = true
         segmentedControl.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         segmentedControl.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-    }
-
-    func showLoadingView (_ isShowing: Bool) {
-        activityIndicator.isHidden = !isShowing
-        if !isShowing {
-            refreshControl.endRefreshing()
-        }
     }
 }
 
