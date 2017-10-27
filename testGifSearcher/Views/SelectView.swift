@@ -30,8 +30,6 @@ class SelectView: UIView, UIGestureRecognizerDelegate {
         return switcher
     }()
 
-    private var selectionIsChangedAction: ((_ : String) -> Void)?
-
     private var segmentedControl: UISegmentedControl = {
         let segmentedControl = UISegmentedControl()
         segmentedControl.backgroundColor = UIColor.white.withAlphaComponent(0.5)
@@ -40,6 +38,8 @@ class SelectView: UIView, UIGestureRecognizerDelegate {
         segmentedControl.isEnabled = false
         return segmentedControl
     }()
+
+    private var selectionIsChangedAction: ((_ : String) -> Void)?
 
     //MARK: - Initializers
     override init(frame: CGRect) {

@@ -4,13 +4,13 @@ import SDWebImage
 
 class TrendedGifsViewController: UIViewController {
 
-    private let segueToResultView = "segueToResultView"
     private let giphyService = GiphyService()
     private let gifPlaceholder = UIImage(named: "ImagePlaceHolder")
     private var isLoading = true
     private let loadingTriggerOffset: CGFloat = 0.0
     private var gifs = [GifModel]()
     var gifsView = GifsView()
+    private var isRemovingNeeded = false
     private var gifRatings = ["g", "pg", "y"]
 
     private var searchTerm = "" {
@@ -23,14 +23,13 @@ class TrendedGifsViewController: UIViewController {
     private var selectedRating = "" {
         didSet {
             if oldValue != selectedRating {
-                gifs.removeAll()
+                isRemovingNeeded = true
                 loadGifsFromServer()
             }
         }
     }
 
     //MARK: - ViewController lyfecycle
-
     override func loadView() {
         super.loadView()
         view.addSubview(gifsView)
@@ -52,7 +51,7 @@ class TrendedGifsViewController: UIViewController {
 
         gifsView.tableViewDelegate = self
         gifsView.searchBarDelegate = self
-        gifsView.dataSource = self
+        gifsView.tableViewDataSource = self
 
         gifsView.setRefreshControlWith(action: refreshGifs)
         gifsView.setSelectOptions(options: gifRatings)
@@ -72,10 +71,12 @@ class TrendedGifsViewController: UIViewController {
                              message: NSLocalizedString("serverError", comment: ""))
             return
         }
-        if gifs.count == 0 {
-            gifsView.setZeroOffset()
+        if isRemovingNeeded {
+            gifs = data
+            isRemovingNeeded = false
+        } else {
+            gifs += data
         }
-        gifs += data
         gifsView.reloadData()
         gifsView.showLoadingView(false)
         isLoading = false

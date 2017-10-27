@@ -44,6 +44,7 @@ class GifsView: UIView {
         label.textAlignment = .center
         return label
     }()
+
     private var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.barTintColor = .black
@@ -59,25 +60,14 @@ class GifsView: UIView {
         return refreshControl
     }()
 
-    private var selectOptions: [String]? {
+    private var segmentedControlTitles: [String]? {
         didSet {
-            guard selectOptions != nil else {
+            guard segmentedControlTitles != nil else {
                 return
             }
-            selectView.setSegmentedControlWith(titles: selectOptions!)
+            selectView.setSegmentedControlWith(titles: segmentedControlTitles!)
         }
     }
-
-    private var refresh: (() -> Void)?
-    private var filter: ((_: String) -> Void)? {
-        didSet {
-            guard filter != nil else {
-                return
-            }
-            selectView.setSelectionIsChangedAction(action: filter!)
-        }
-    }
-    private var resetFilter: ((_: Bool) -> Void)?
 
     var searchBarDelegate: UISearchBarDelegate? {
         didSet {
@@ -91,9 +81,20 @@ class GifsView: UIView {
         }
     }
 
-    var dataSource: UITableViewDataSource? {
+    var tableViewDataSource: UITableViewDataSource? {
         didSet {
-            tableView.dataSource = dataSource
+            tableView.dataSource = tableViewDataSource
+        }
+    }
+    
+    private var refresh: (() -> Void)?
+    private var resetFilter: ((_: Bool) -> Void)?
+    private var filter: ((_: String) -> Void)? {
+        didSet {
+            guard filter != nil else {
+                return
+            }
+            selectView.setSelectionIsChangedAction(action: filter!)
         }
     }
 
@@ -130,7 +131,7 @@ class GifsView: UIView {
     }
 
     func setSelectOptions(options: [String]) {
-        selectOptions = options
+        segmentedControlTitles = options
     }
 
     func setSwitcherWith(action: @escaping (_ : Bool) -> Void){
@@ -139,10 +140,6 @@ class GifsView: UIView {
 
     func setRefreshControlWith(action: @escaping () -> Void) {
         refresh = action
-    }
-
-    func setZeroOffset(){
-        tableView.contentOffset.y = initialTableViewContentOffset
     }
 
     func setSegmentedControlWith(action: @escaping (_ : String) -> ()){
