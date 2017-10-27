@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		75027BD61FA33C7C004B8686 /* SelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75027BD51FA33C7C004B8686 /* SelectView.swift */; };
 		75ECC1C21FA08614001FADE9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 75ECC1C11FA08614001FADE9 /* Localizable.strings */; };
 		75ECC1CE1FA214E2001FADE9 /* GifsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ECC1CD1FA214E2001FADE9 /* GifsView.swift */; };
 		85F98F6F1F8621290052A3F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F98F6E1F8621290052A3F0 /* AppDelegate.swift */; };
@@ -23,8 +24,9 @@
 		010B34B32B330E2EBB4AFD87 /* Pods_testGifSearcher.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_testGifSearcher.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3487AE44CB9965BC8D231E35 /* Pods-testGifSearcher.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-testGifSearcher.release.xcconfig"; path = "Pods/Target Support Files/Pods-testGifSearcher/Pods-testGifSearcher.release.xcconfig"; sourceTree = "<group>"; };
 		4214EB7C7A44FA8446C155C0 /* Pods-testGifSearcher.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-testGifSearcher.debug.xcconfig"; path = "Pods/Target Support Files/Pods-testGifSearcher/Pods-testGifSearcher.debug.xcconfig"; sourceTree = "<group>"; };
+		75027BD51FA33C7C004B8686 /* SelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectView.swift; sourceTree = "<group>"; };
 		75ECC1C11FA08614001FADE9 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
-		75ECC1CD1FA214E2001FADE9 /* GifsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifsView.swift; sourceTree = "<group>"; };
+		75ECC1CD1FA214E2001FADE9 /* GifsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifsView.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		85F98F6B1F8621290052A3F0 /* testGifSearcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = testGifSearcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		85F98F6E1F8621290052A3F0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		85F98F701F8621290052A3F0 /* TrendedGifsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendedGifsViewController.swift; sourceTree = "<group>"; };
@@ -70,6 +72,7 @@
 			children = (
 				85F98F771F8621290052A3F0 /* LaunchScreen.storyboard */,
 				75ECC1CD1FA214E2001FADE9 /* GifsView.swift */,
+				75027BD51FA33C7C004B8686 /* SelectView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -276,6 +279,7 @@
 			files = (
 				85F98F851F862ECF0052A3F0 /* GifModel.swift in Sources */,
 				75ECC1CE1FA214E2001FADE9 /* GifsView.swift in Sources */,
+				75027BD61FA33C7C004B8686 /* SelectView.swift in Sources */,
 				85F98F811F8625920052A3F0 /* GifTableViewCell.swift in Sources */,
 				85F98F711F8621290052A3F0 /* TrendedGifsViewController.swift in Sources */,
 				85F98F6F1F8621290052A3F0 /* AppDelegate.swift in Sources */,

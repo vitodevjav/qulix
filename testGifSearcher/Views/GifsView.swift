@@ -9,18 +9,15 @@
 import Foundation
 
 class GifsView: UIView {
-
     private var searchBarHeightConstant: CGFloat = 60.0
     private var isLoadingViewHeightConstant: CGFloat = 30.0
     private var isLoadingViewWidthConstant: CGFloat = 200.0
+    private var selectViewHeightConstant: CGFloat = 50
+    private var initialTableViewContentOffset: CGFloat = -100
 
-    private var switcherTitleLabel: UILabel = {
-        let label = UILabel()
-        label.text = NSLocalizedString("resetFilter", comment: "")
-        label.font = UIFont(name: label.font.fontName, size: 15)
-        label.textAlignment = .center
-        label.textColor = .white
-        return label
+    private var selectView: SelectView = {
+        let selectView = SelectView(frame: .zero)
+        return selectView
     }()
 
     private var tableView: UITableView = {
@@ -30,13 +27,6 @@ class GifsView: UIView {
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 0
         return tableView
-    }()
-
-    private var segmentedControlActivitySwitcher: UISwitch = {
-        let switcher = UISwitch()
-        switcher.onTintColor = UIColor.white.withAlphaComponent(0.9)
-        switcher.addTarget(self, action: #selector(resetFilter), for: .valueChanged)
-        return switcher
     }()
 
     private var activityIndicator: UIActivityIndicatorView = {
@@ -56,16 +46,9 @@ class GifsView: UIView {
     }()
     private var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
+        searchBar.barTintColor = .black
         searchBar.placeholder = NSLocalizedString("Search", comment: "")
         return searchBar
-    }()
-
-    private var segmentedControl: UISegmentedControl = {
-        let segmentedControl = UISegmentedControl()
-        segmentedControl.backgroundColor = UIColor.white.withAlphaComponent(0.5)
-        segmentedControl.tintColor = UIColor.white.withAlphaComponent(0.7)
-        segmentedControl.addTarget(self, action: #selector(filterTableViewData), for: .valueChanged)
-        return segmentedControl
     }()
 
     var refreshControl: UIRefreshControl = {
@@ -76,9 +59,25 @@ class GifsView: UIView {
         return refreshControl
     }()
 
+    private var selectOptions: [String]? {
+        didSet {
+            guard selectOptions != nil else {
+                return
+            }
+            selectView.setSegmentedControlWith(titles: selectOptions!)
+        }
+    }
+
     private var refresh: (() -> Void)?
-    private var filter: ((_: Int) -> Void)?
-    private var reset: ((_: Bool) -> Void)?
+    private var filter: ((_: String) -> Void)? {
+        didSet {
+            guard filter != nil else {
+                return
+            }
+            selectView.setSelectionIsChangedAction(action: filter!)
+        }
+    }
+    private var resetFilter: ((_: Bool) -> Void)?
 
     var searchBarDelegate: UISearchBarDelegate? {
         didSet {
@@ -98,86 +97,91 @@ class GifsView: UIView {
         }
     }
 
+    //MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
+        let tapRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(backgroundTapped))
 
+        addSubview(searchBar)
+        addGestureRecognizer(tapRecognizer)
+        addSubview(selectView)
         addSubview(tableView)
         addSubview(activityIndicator)
         addSubview(isLoadingLabel)
-        addSubview(searchBar)
-        addSubview(segmentedControl)
-        addSubview(segmentedControlActivitySwitcher)
-        addSubview(switcherTitleLabel)
         tableView.addSubview(refreshControl)
 
         createSearchBarConstraints()
-        createSegmentedControlConstraints()
+        createSelectViewConstraints()
         createTableViewConstraints()
         createActivityIndicatorConstraints()
         createLoadingLabelConstraints()
-        createSwitchConstraints()
-        createSwitcherTitleConstraints()
+    }
+
+    @objc func backgroundTapped() {
+        endEditing(true)
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    //MARK: - Actions
+    @objc private func refreshTableViewItems() {
+        refresh?()
+    }
 
-    func setSegmentedControlWith(titles: [String]) {
-        for item in titles {
-            segmentedControl.insertSegment(withTitle: item, at: segmentedControl.numberOfSegments, animated: true)
-        }
-        segmentedControl.selectedSegmentIndex = 0
+    func setSelectOptions(options: [String]) {
+        selectOptions = options
     }
 
     func setSwitcherWith(action: @escaping (_ : Bool) -> Void){
-        reset = action
+        resetFilter = action
     }
 
     func setRefreshControlWith(action: @escaping () -> Void) {
         refresh = action
     }
 
-    @objc private func resetFilter() {
-        reset(segmentedControlActivitySwitcher.isOn)
+    func setZeroOffset(){
+        tableView.contentOffset.y = initialTableViewContentOffset
     }
 
-    @objc private func filterTableViewData() {
-        filter?(segmentedControl.selectedSegmentIndex)
-    }
-
-    @objc private func refreshTableViewItems() {
-        refresh?()
-    }
-
-    func setSegmentedControlWith(action: @escaping (_ : Int) -> ()){
+    func setSegmentedControlWith(action: @escaping (_ : String) -> ()){
         filter = action
     }
 
-    private func createSwitchConstraints() {
-        segmentedControlActivitySwitcher.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([segmentedControlActivitySwitcher.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
-                                     segmentedControlActivitySwitcher.trailingAnchor.constraint(equalTo: trailingAnchor)])
+    func reloadData() {
+        tableView.reloadData()
     }
 
+    func showLoadingView(_ isShowing: Bool) {
+        isLoadingLabel.isHidden = !isShowing
+        if isShowing {
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicator.stopAnimating()
+            refreshControl.endRefreshing()
+        }
+    }
+
+    //MARK: - Constraint creating
     private func createSearchBarConstraints() {
         searchBar.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([searchBar.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
+        NSLayoutConstraint.activate([searchBar.topAnchor.constraint(equalTo: topAnchor),
                                      searchBar.leadingAnchor.constraint(equalTo: leadingAnchor),
-                                     searchBar.trailingAnchor.constraint(equalTo: trailingAnchor),
-                                     searchBar.heightAnchor.constraint(equalToConstant: searchBarHeightConstant)])
+                                     searchBar.trailingAnchor.constraint(equalTo: trailingAnchor)])
     }
 
-    private func createSegmentedControlConstraints() {
-        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([segmentedControl.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
-                                     segmentedControl.leadingAnchor.constraint(equalTo: leadingAnchor),
-                                     segmentedControl.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.6)])
+    private func createSelectViewConstraints() {
+        selectView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([selectView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
+                                     selectView.leadingAnchor.constraint(equalTo: leadingAnchor),
+                                     selectView.trailingAnchor.constraint(equalTo: trailingAnchor),
+                                     selectView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.08)])
     }
 
     private func createTableViewConstraints() {
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([tableView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor),
+        NSLayoutConstraint.activate([tableView.topAnchor.constraint(equalTo: selectView.bottomAnchor),
                                      tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
                                      tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
                                      tableView.bottomAnchor.constraint(equalTo: bottomAnchor)])
@@ -195,27 +199,5 @@ class GifsView: UIView {
                                      isLoadingLabel.topAnchor.constraint(equalTo: activityIndicator.bottomAnchor),
                                      isLoadingLabel.widthAnchor.constraint(equalToConstant: isLoadingViewWidthConstant),
                                      isLoadingLabel.heightAnchor.constraint(equalToConstant: isLoadingViewHeightConstant)])
-    }
-
-    private func createSwitcherTitleConstraints() {
-        switcherTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([switcherTitleLabel.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
-                                     switcherTitleLabel.leadingAnchor.constraint(equalTo: segmentedControl.trailingAnchor),
-                                     switcherTitleLabel.trailingAnchor.constraint(equalTo: segmentedControlActivitySwitcher.leadingAnchor),
-                                     switcherTitleLabel.bottomAnchor.constraint(equalTo: tableView.topAnchor)])
-    }
-
-    func reloadData() {
-        tableView.reloadData()
-    }
-
-    func showLoadingView(_ isShowing: Bool) {
-        isLoadingLabel.isHidden = !isShowing
-        if isShowing {
-            activityIndicator.startAnimating()
-        } else {
-            activityIndicator.stopAnimating()
-            refreshControl.endRefreshing()
-        }
     }
 }

@@ -30,8 +30,8 @@ class GiphyService {
         return gifArray
     }
 
-    public func loadTrendingGifs(offset: Int, completion: @escaping ([GifModel]?) -> Void) {
-        let urlString = "https://api.giphy.com/v1/gifs/trending?api_key=\(keyApi)&limit=\(self.gifsCountToReturn)&offset=\(offset)"
+    public func loadTrendingGifs(offset: Int, rating: String, completion: @escaping ([GifModel]?) -> Void) {
+        let urlString = "https://api.giphy.com/v1/gifs/trending?rating=\(rating)&api_key=\(keyApi)&limit=\(self.gifsCountToReturn)&offset=\(offset)"
 
         Alamofire.request(urlString).responseJSON { response in
             guard let json = response.result.value as? [String: Any] else {
@@ -43,9 +43,9 @@ class GiphyService {
         }
     }
 
-    public func searchGifsByName(_ name: String, offset: Int, completion: @escaping ([GifModel]?) -> Void) {
+    public func searchGifsByName(_ name: String, offset: Int, rating: String, completion: @escaping ([GifModel]?) -> Void) {
         let httpName = name.replacingOccurrences(of: " ", with: "+")
-        let urlString = "https://api.giphy.com/v1/gifs/search?q=\(httpName)&api_key=\(keyApi)&limit=\(gifsCountToReturn)&offset=\(offset)"
+        let urlString = "https://api.giphy.com/v1/gifs/search?q=\(httpName)&rating=\(rating)&api_key=\(keyApi)&limit=\(gifsCountToReturn)&offset=\(offset)"
 
         Alamofire.request(urlString).responseJSON { response in
             guard let json = response.result.value as? [String: Any] else {

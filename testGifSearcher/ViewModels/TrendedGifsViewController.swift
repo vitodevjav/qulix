@@ -11,7 +11,6 @@ class TrendedGifsViewController: UIViewController {
     private let loadingTriggerOffset: CGFloat = 0.0
     private var gifs = [GifModel]()
     var gifsView = GifsView()
-    private var filteredGifs = [GifModel]()
     private var gifRatings = ["g", "pg", "y"]
 
     private var searchTerm = "" {
@@ -21,16 +20,29 @@ class TrendedGifsViewController: UIViewController {
         }
     }
 
-    private var selectedIndex = -1 {
+    private var selectedRating = "" {
         didSet {
-            filterGifs()
+            if oldValue != selectedRating {
+                gifs.removeAll()
+                loadGifsFromServer()
+            }
         }
     }
 
-
+    //MARK: - ViewController lyfecycle
 
     override func loadView() {
-        view = gifsView
+        super.loadView()
+        view.addSubview(gifsView)
+        createConstraints()
+    }
+
+    func createConstraints() {
+        gifsView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([gifsView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor),
+                                     gifsView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                                     gifsView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                                     gifsView.trailingAnchor.constraint(equalTo: view.trailingAnchor)])
     }
 
     override func viewDidLoad() {
@@ -42,36 +54,16 @@ class TrendedGifsViewController: UIViewController {
         gifsView.searchBarDelegate = self
         gifsView.dataSource = self
 
-        gifsView.setRefreshControlWith(action: refreshTrendedGifs)
-        gifsView.setSegmentedControlWith(titles: gifRatings)
+        gifsView.setRefreshControlWith(action: refreshGifs)
+        gifsView.setSelectOptions(options: gifRatings)
         gifsView.setSegmentedControlWith(action: ratingDidChange)
-        gifsView.setSwitcherWith(action: resetFilter)
 
         loadGifsFromServer()
     }
 
-    func ratingDidChange(newValue: Int) {
-        selectedIndex = newValue
-    }
-
-    func disableFilter(isDisabled: Bool) {
-        if isDisabled {
-            selectedIndex = -1
-        }
-    }
-
-    func filterGifs() {
-        filteredGifs.removeAll()
-        if selectedIndex == -1 {
-            filteredGifs.append(contentsOf: gifs)
-        } else {
-            for gif in gifs {
-                if gif.rating.contains(gifRatings[selectedIndex]) {
-                    filteredGifs.append(gif)
-                }
-            }
-        }
-        gifsView.reloadData()
+    //MARK: - Actions
+    func ratingDidChange(newValue: String) {
+        selectedRating = newValue
     }
 
     private func gifsDidLoad(result: [GifModel]?) {
@@ -80,13 +72,16 @@ class TrendedGifsViewController: UIViewController {
                              message: NSLocalizedString("serverError", comment: ""))
             return
         }
+        if gifs.count == 0 {
+            gifsView.setZeroOffset()
+        }
         gifs += data
-        filterGifs()
+        gifsView.reloadData()
         gifsView.showLoadingView(false)
         isLoading = false
     }
 
-    private func refreshTrendedGifs() {
+    private func refreshGifs() {
         gifs.removeAll()
         loadGifsFromServer()
     }
@@ -94,9 +89,9 @@ class TrendedGifsViewController: UIViewController {
     private func loadGifsFromServer() {
         gifsView.showLoadingView(true)
         if searchTerm.isEmpty {
-            giphyService.loadTrendingGifs(offset: gifs.count, completion: gifsDidLoad)
+            giphyService.loadTrendingGifs(offset: gifs.count, rating: selectedRating, completion: gifsDidLoad)
         } else {
-            giphyService.searchGifsByName(searchTerm, offset: gifs.count, completion: gifsDidLoad)
+            giphyService.searchGifsByName(searchTerm, offset: gifs.count, rating: selectedRating, completion: gifsDidLoad)
         }
     }
 
@@ -113,6 +108,7 @@ class TrendedGifsViewController: UIViewController {
 // MARK: - UISearchBarDelegate
 extension TrendedGifsViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
         guard let searchRequest = searchBar.text else {
             createAlert(title: "warningTitle", message: "badRequest")
             return
@@ -128,18 +124,18 @@ extension TrendedGifsViewController: UISearchBarDelegate {
 // MARK: - UITableViewDataSource
 extension TrendedGifsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filteredGifs.count
+        return gifs.count
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return CGFloat(filteredGifs[indexPath.row].height)
+        return CGFloat(gifs[indexPath.row].height)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: GifTableViewCell.identifier,
                                                  for: indexPath) as! GifTableViewCell
 
-        cell.gifView.sd_setImage(with: URL(string: filteredGifs[indexPath.row].url), placeholderImage: gifPlaceholder)
+        cell.gifView.sd_setImage(with: URL(string: gifs[indexPath.row].url), placeholderImage: gifPlaceholder)
         cell.setTrendedMark()
         return cell
     }
