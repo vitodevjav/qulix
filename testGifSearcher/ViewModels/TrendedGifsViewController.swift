@@ -15,7 +15,7 @@ class TrendedGifsViewController: UIViewController {
 
     private var searchTerm = "" {
         didSet {
-            gifs.removeAll()
+            isRemovingNeeded = true
             loadGifsFromServer()
         }
     }
@@ -83,7 +83,7 @@ class TrendedGifsViewController: UIViewController {
     }
 
     private func refreshGifs() {
-        gifs.removeAll()
+        isRemovingNeeded = true
         loadGifsFromServer()
     }
 
