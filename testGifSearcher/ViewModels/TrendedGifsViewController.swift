@@ -32,8 +32,6 @@ class TrendedGifsViewController: UIViewController {
     //MARK: - ViewController lyfecycle
     override func loadView() {
         super.loadView()
-        view.addSubview(gifsView)
-        createConstraints()
     }
 
     func createConstraints() {
@@ -46,7 +44,8 @@ class TrendedGifsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        view.addSubview(gifsView)
+        createConstraints()
         title = NSLocalizedString("gifSearcher", comment: "")
 
         gifsView.tableViewDelegate = self
@@ -124,6 +123,13 @@ extension TrendedGifsViewController: UISearchBarDelegate {
 
 // MARK: - UITableViewDataSource
 extension TrendedGifsViewController: UITableViewDataSource {
+
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        navigationController?.pushViewController(GifViewController(gif: gifs[indexPath.row]), animated: true)
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return gifs.count
     }
@@ -136,7 +142,7 @@ extension TrendedGifsViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: GifTableViewCell.identifier,
                                                  for: indexPath) as! GifTableViewCell
 
-        cell.gifView.sd_setImage(with: URL(string: gifs[indexPath.row].url), placeholderImage: gifPlaceholder)
+        cell.gifView.sd_setImage(with: URL(string: gifs[indexPath.row].originalURL), placeholderImage: gifPlaceholder)
         cell.setTrendedMark()
         return cell
     }

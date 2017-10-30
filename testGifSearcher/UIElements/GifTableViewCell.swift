@@ -11,7 +11,7 @@ class GifTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-
+        self.clipsToBounds = true
         starImageView.image = trendedMarkImage
 
         addSubview(gifView)

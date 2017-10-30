@@ -7,6 +7,18 @@ class GiphyService {
     private let keyApi = "oTZ3TChX3NjlHPtzKLCvLIuETVsEpp5q"
     private let gifsCountToReturn = 50
 
+    func parseNotificationMessageToGif(json: [String: Any]) -> GifModel? {
+        debugPrint(json)
+        guard let originalURL = json["url"] as? String,
+            let height = json["height"] as? Int,
+            let width = json["width"] as? Int,
+            let rating = json["rating"] as? String,
+            let isTrended = json["isTrended"] as? Bool else {
+                return nil
+        }
+        return GifModel.init(originalURL: originalURL, isTrended: isTrended, rating: rating, height: height, width: width)
+    }
+
     private func parseJsonToGifArray(_ json: [String: Any]) -> [GifModel]? {
         guard let dataMap = json["data"] as? [[String: Any]] else {
             return nil
@@ -14,18 +26,19 @@ class GiphyService {
         var gifArray: [GifModel]=[]
         for data in dataMap {
             guard let images = data["images"] as? [String: Any],
-                  let original = images["original"] as? [String: Any],
-                  let trended = (data["trending_datetime"] as? String)?.isEmpty,
-                  let rating = data["rating"] as? String,
-                  let url = original["url"] as? String,
-                  let stringHeight = original["height"] as? String,
-                  let stringWidth = original["width"] as? String,
-                  let height = Int(stringHeight),
-                  let width = Int(stringWidth) else {
-                continue
+                let original = images["original"] as? [String: Any],
+//                let preview = images["fixed_height_small"] as? [String: Any],
+//                let previewURL = preview["url"] as? String,
+                let trended = (data["trending_datetime"] as? String)?.isEmpty,
+                let rating = data["rating"] as? String,
+                let originalURL = original["url"] as? String,
+                let stringHeight = original["height"] as? String,
+                let stringWidth = original["width"] as? String,
+                let height = Int(stringHeight),
+                let width = Int(stringWidth) else {
+                    continue
             }
-
-            gifArray.append(GifModel(url: url, trended: trended, rating: rating, height: height, width: width))
+            gifArray.append(GifModel(originalURL: originalURL, isTrended: trended, rating: rating, height: height, width: width))
         }
         return gifArray
     }

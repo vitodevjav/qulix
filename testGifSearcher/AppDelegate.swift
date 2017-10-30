@@ -30,9 +30,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didReceiveRemoteNotification data: [AnyHashable : Any]) {
-        // Print notification payload data
-        print("Push notification received: \(data)")
+        guard let image = data["image"] as? [String: Any] else {
+            return
+        }
+        guard let gif = GiphyService().parseNotificationMessageToGif(json: image) else {
+            return
+        }
+        (window?.rootViewController! as! UINavigationController).pushViewController(GifViewController(gif: gif), animated: true)
     }
-
 }
 
