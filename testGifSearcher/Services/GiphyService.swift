@@ -16,7 +16,7 @@ class GiphyService {
             let isTrended = json["isTrended"] as? Bool else {
                 return nil
         }
-        return GifModel.init(originalURL: originalURL, isTrended: isTrended, rating: rating, height: height, width: width)
+        return GifModel(originalURL: originalURL, isTrended: isTrended, rating: rating, height: height, width: width)
     }
 
     private func parseJsonToGifArray(_ json: [String: Any]) -> [GifModel]? {

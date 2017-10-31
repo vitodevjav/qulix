@@ -101,7 +101,6 @@ class GifsView: UIView {
     //MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
-        let tapRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(backgroundTapped))
 
         addSubview(searchBar)
         addSubview(selectView)

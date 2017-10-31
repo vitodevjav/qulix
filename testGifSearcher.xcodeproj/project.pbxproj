@@ -10,6 +10,7 @@
 		75027BD61FA33C7C004B8686 /* SelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75027BD51FA33C7C004B8686 /* SelectView.swift */; };
 		75027BDC1FA78172004B8686 /* GifView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75027BDB1FA78172004B8686 /* GifView.swift */; };
 		75027BDE1FA785ED004B8686 /* GifViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75027BDD1FA785ED004B8686 /* GifViewController.swift */; };
+		75C08A6D1FA8A26E00C4C695 /* GifSearcherDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 75C08A6B1FA8A26E00C4C695 /* GifSearcherDataModel.xcdatamodeld */; };
 		75ECC1C21FA08614001FADE9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 75ECC1C11FA08614001FADE9 /* Localizable.strings */; };
 		75ECC1CE1FA214E2001FADE9 /* GifsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ECC1CD1FA214E2001FADE9 /* GifsView.swift */; };
 		85F98F6F1F8621290052A3F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F98F6E1F8621290052A3F0 /* AppDelegate.swift */; };
@@ -30,6 +31,7 @@
 		75027BD81FA7695F004B8686 /* testGifSearcher.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = testGifSearcher.entitlements; sourceTree = "<group>"; };
 		75027BDB1FA78172004B8686 /* GifView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifView.swift; sourceTree = "<group>"; };
 		75027BDD1FA785ED004B8686 /* GifViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifViewController.swift; sourceTree = "<group>"; };
+		75C08A6C1FA8A26E00C4C695 /* GifSearcherDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GifSearcherDataModel.xcdatamodel; sourceTree = "<group>"; };
 		75ECC1C11FA08614001FADE9 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		75ECC1CD1FA214E2001FADE9 /* GifsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifsView.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		85F98F6B1F8621290052A3F0 /* testGifSearcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = testGifSearcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,6 +149,7 @@
 				85F98F751F8621290052A3F0 /* Assets.xcassets */,
 				85F98F7A1F8621290052A3F0 /* Info.plist */,
 				75ECC1C11FA08614001FADE9 /* Localizable.strings */,
+				75C08A6B1FA8A26E00C4C695 /* GifSearcherDataModel.xcdatamodeld */,
 			);
 			path = testGifSearcher;
 			sourceTree = "<group>";
@@ -297,6 +300,7 @@
 				85F98F811F8625920052A3F0 /* GifTableViewCell.swift in Sources */,
 				85F98F711F8621290052A3F0 /* TrendedGifsViewController.swift in Sources */,
 				85F98F6F1F8621290052A3F0 /* AppDelegate.swift in Sources */,
+				75C08A6D1FA8A26E00C4C695 /* GifSearcherDataModel.xcdatamodeld in Sources */,
 				75027BDE1FA785ED004B8686 /* GifViewController.swift in Sources */,
 				85F98F831F8628A00052A3F0 /* GiphyService.swift in Sources */,
 			);
@@ -364,7 +368,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -415,7 +419,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -433,7 +437,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7UALYYJUG6;
 				INFOPLIST_FILE = testGifSearcher/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.qulix.push.notification;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -454,7 +458,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7UALYYJUG6;
 				INFOPLIST_FILE = testGifSearcher/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.qulix.push.notification;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -486,6 +490,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		75C08A6B1FA8A26E00C4C695 /* GifSearcherDataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				75C08A6C1FA8A26E00C4C695 /* GifSearcherDataModel.xcdatamodel */,
+			);
+			currentVersion = 75C08A6C1FA8A26E00C4C695 /* GifSearcherDataModel.xcdatamodel */;
+			path = GifSearcherDataModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 85F98F631F8621290052A3F0 /* Project object */;
 }

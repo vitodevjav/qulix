@@ -1,6 +1,7 @@
 import UIKit
 import Alamofire
 import SDWebImage
+import CoreData
 
 class TrendedGifsViewController: UIViewController {
 
@@ -55,13 +56,50 @@ class TrendedGifsViewController: UIViewController {
         gifsView.setRefreshControlWith(action: refreshGifs)
         gifsView.setSelectOptions(options: gifRatings)
         gifsView.setSegmentedControlWith(action: ratingDidChange)
-
+        fetch()
         loadGifsFromServer()
     }
 
     //MARK: - Actions
     func ratingDidChange(newValue: String) {
         selectedRating = newValue
+    }
+
+    private func fetch() {
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                return
+        }
+        let managedContext = appDelegate.persistentContainer.viewContext
+        let gifModelRequest: NSFetchRequest<GifModelMO> = NSFetchRequest(entityName: "GifModel")
+        do {
+            let result = try managedContext.fetch(gifModelRequest)
+        } catch {
+
+        }
+    }
+
+    private func save(gif: GifModel) {
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                return
+        }
+        let managedContext = appDelegate.persistentContainer.viewContext
+
+        let entity = NSEntityDescription.entity(forEntityName: "GifModel",
+                                       in: managedContext)!
+        let gifModel = NSManagedObject(entity: entity,
+                                     insertInto: managedContext)
+        gifModel.setValue(gif.originalURL, forKeyPath: "originalURL")
+        gifModel.setValue(gif.width, forKeyPath: "width")
+        gifModel.setValue(gif.height, forKeyPath: "height")
+        gifModel.setValue(gif.isTrended, forKeyPath: "isTrended")
+        gifModel.setValue(gif.rating, forKeyPath: "rating")
+        do {
+            try managedContext.save()
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
     }
 
     private func gifsDidLoad(result: [GifModel]?) {
@@ -141,6 +179,8 @@ extension TrendedGifsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: GifTableViewCell.identifier,
                                                  for: indexPath) as! GifTableViewCell
+
+        save(gif: gifs[indexPath.row])
 
         cell.gifView.sd_setImage(with: URL(string: gifs[indexPath.row].originalURL), placeholderImage: gifPlaceholder)
         cell.setTrendedMark()
