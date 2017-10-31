@@ -66,11 +66,7 @@ class TrendedGifsViewController: UIViewController {
     }
 
     private func fetch() {
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-                return
-        }
-        let managedContext = appDelegate.persistentContainer.viewContext
+        let managedContext = CoreDataStack.instance.managedContext
         let gifModelRequest: NSFetchRequest<GifModelMO> = NSFetchRequest(entityName: "GifModel")
         do {
             let result = try managedContext.fetch(gifModelRequest)
@@ -80,18 +76,13 @@ class TrendedGifsViewController: UIViewController {
     }
 
     private func save(gif: GifModel) {
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-                return
-        }
-        let managedContext = appDelegate.persistentContainer.viewContext
+        let managedContext = CoreDataStack.instance.managedContext
 
         let entity = NSEntityDescription.entity(forEntityName: "GifModel",
                                        in: managedContext)!
         let gifModel = NSManagedObject(entity: entity,
                                      insertInto: managedContext)
         gifModel.setValue(gif.originalURL, forKeyPath: "originalURL")
-        gifModel.setValue(gif.width, forKeyPath: "width")
         gifModel.setValue(gif.height, forKeyPath: "height")
         gifModel.setValue(gif.isTrended, forKeyPath: "isTrended")
         gifModel.setValue(gif.rating, forKeyPath: "rating")
