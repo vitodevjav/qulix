@@ -12,12 +12,12 @@ import SDWebImage
 
 class GifView: UIView {
     private var placeHolder = UIImage(named: "placeholder")
-    private var gifContent: GifModel? {
+    private var gifContent: GifModelMO? {
         didSet {
             guard let gif = gifContent else {
                 return
             }
-            imageView.sd_setImage(with: URL(string: gif.originalURL), placeholderImage: placeHolder)
+            imageView.sd_setImage(with: URL(string: gif.originalURL!), placeholderImage: placeHolder)
         }
     }
     private var imageView: FLAnimatedImageView = {
@@ -45,7 +45,7 @@ class GifView: UIView {
         }
     }
 
-    func setViewContent(gif: GifModel) {
+    func setViewContent(gif: GifModelMO) {
         gifContent = gif
     }
 

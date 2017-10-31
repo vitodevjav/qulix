@@ -42,6 +42,7 @@ class GifsView: UIView {
         label.text = NSLocalizedString("loading", comment: "")
         label.font = UIFont(name: label.font.fontName, size: 30)
         label.textAlignment = .center
+        label.isHidden = true
         return label
     }()
 

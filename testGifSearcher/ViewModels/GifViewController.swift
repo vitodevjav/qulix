@@ -12,8 +12,8 @@ import UIKit
 class GifViewController: UIViewController {
 
     private var gifView = GifView(frame: .zero)
-    private var gif: GifModel
-    init(gif: GifModel) {
+    private var gif: GifModelMO
+    init(gif: GifModelMO) {
         self.gif = gif
         super.init(nibName: nil, bundle: nil)
     }

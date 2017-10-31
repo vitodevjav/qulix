@@ -46,5 +46,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         navigation.pushViewController(GifViewController(gif: gif), animated: false)
     }
+
+    func applicationWillTerminate(_ application: UIApplication) {
+        CoreDataStack.instance.truncate()
+    }
 }
 

@@ -1,13 +1,13 @@
 import Foundation
 import Alamofire
-
+import CoreData
 
 class GiphyService {
 
     private let keyApi = "oTZ3TChX3NjlHPtzKLCvLIuETVsEpp5q"
     private let gifsCountToReturn = 50
 
-    func parseNotificationMessageToGif(json: [String: Any]) -> GifModel? {
+    func parseNotificationMessageToGif(json: [String: Any]) -> GifModelMO? {
         debugPrint(json)
         guard let originalURL = json["url"] as? String,
             let height = json["height"] as? Int,
@@ -16,14 +16,15 @@ class GiphyService {
             let isTrended = json["isTrended"] as? Bool else {
                 return nil
         }
-        return GifModel(originalURL: originalURL, isTrended: isTrended, rating: rating, height: height, width: width)
+        return CoreDataStack.instance.createGifModelMO(height: height, width: width, rating: rating,
+                                                     originalUrl: originalURL, isTrended: isTrended)
     }
 
-    private func parseJsonToGifArray(_ json: [String: Any]) -> [GifModel]? {
+    private func parseJsonToGifArray(_ json: [String: Any]) -> [GifModelMO]? {
         guard let dataMap = json["data"] as? [[String: Any]] else {
             return nil
         }
-        var gifArray: [GifModel]=[]
+        var gifArray: [GifModelMO]=[]
         for data in dataMap {
             guard let images = data["images"] as? [String: Any],
                 let original = images["original"] as? [String: Any],
@@ -36,12 +37,13 @@ class GiphyService {
                 let width = Int(stringWidth) else {
                     continue
             }
-            gifArray.append(GifModel(originalURL: originalURL, isTrended: trended, rating: rating, height: height, width: width))
+            gifArray.append(CoreDataStack.instance.createGifModelMO(height: height, width: width, rating: rating,
+                                                                    originalUrl: originalURL, isTrended: trended))
         }
         return gifArray
     }
 
-    public func loadTrendingGifs(offset: Int, rating: String, completion: @escaping ([GifModel]?) -> Void) {
+    public func loadTrendingGifs(offset: Int, rating: String, completion: @escaping ([GifModelMO]?) -> Void) {
         let urlString = "https://api.giphy.com/v1/gifs/trending?rating=\(rating)&api_key=\(keyApi)&limit=\(self.gifsCountToReturn)&offset=\(offset)"
 
         Alamofire.request(urlString).responseJSON { response in
@@ -54,7 +56,7 @@ class GiphyService {
         }
     }
 
-    public func searchGifsByName(_ name: String, offset: Int, rating: String, completion: @escaping ([GifModel]?) -> Void) {
+    public func searchGifsByName(_ name: String, offset: Int, rating: String, completion: @escaping ([GifModelMO]?) -> Void) {
         let httpName = name.replacingOccurrences(of: " ", with: "+")
         let urlString = "https://api.giphy.com/v1/gifs/search?q=\(httpName)&rating=\(rating)&api_key=\(keyApi)&limit=\(gifsCountToReturn)&offset=\(offset)"
 
