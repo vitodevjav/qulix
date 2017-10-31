@@ -20,7 +20,6 @@
 		85F98F791F8621290052A3F0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 85F98F771F8621290052A3F0 /* LaunchScreen.storyboard */; };
 		85F98F811F8625920052A3F0 /* GifTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F98F801F8625920052A3F0 /* GifTableViewCell.swift */; };
 		85F98F831F8628A00052A3F0 /* GiphyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F98F821F8628A00052A3F0 /* GiphyService.swift */; };
-		85F98F851F862ECF0052A3F0 /* GifModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85F98F841F862ECF0052A3F0 /* GifModel.swift */; };
 		9B10A09F7978401F8A36DD1B /* Pods_testGifSearcher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 010B34B32B330E2EBB4AFD87 /* Pods_testGifSearcher.framework */; };
 /* End PBXBuildFile section */
 
@@ -44,7 +43,6 @@
 		85F98F7A1F8621290052A3F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		85F98F801F8625920052A3F0 /* GifTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifTableViewCell.swift; sourceTree = "<group>"; };
 		85F98F821F8628A00052A3F0 /* GiphyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiphyService.swift; sourceTree = "<group>"; };
-		85F98F841F862ECF0052A3F0 /* GifModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,7 +97,6 @@
 		85C21BE81F8774430056CA9E /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				85F98F841F862ECF0052A3F0 /* GifModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -296,7 +293,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				85F98F851F862ECF0052A3F0 /* GifModel.swift in Sources */,
 				75027BDC1FA78172004B8686 /* GifView.swift in Sources */,
 				75ECC1CE1FA214E2001FADE9 /* GifsView.swift in Sources */,
 				75027BD61FA33C7C004B8686 /* SelectView.swift in Sources */,

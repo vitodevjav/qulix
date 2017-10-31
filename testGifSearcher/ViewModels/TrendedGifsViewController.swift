@@ -9,7 +9,11 @@ class TrendedGifsViewController: UIViewController {
     private let gifPlaceholder = UIImage(named: "ImagePlaceHolder")
     private var isLoading = true
     private let loadingTriggerOffset: CGFloat = 0.0
-    private var gifs = [GifModel]()
+    private var gifs = [GifModelMO]() {
+        didSet {
+            gifsView.reloadData()
+        }
+    }
     var gifsView = GifsView()
     private var isRemovingNeeded = false
     private var gifRatings = ["g", "pg", "y"]
@@ -56,8 +60,16 @@ class TrendedGifsViewController: UIViewController {
         gifsView.setRefreshControlWith(action: refreshGifs)
         gifsView.setSelectOptions(options: gifRatings)
         gifsView.setSegmentedControlWith(action: ratingDidChange)
-        fetch()
-        loadGifsFromServer()
+        guard let cachedGifs = CoreDataStack.instance.fetch() else {
+            loadGifsFromServer()
+            return
+        }
+        gifs = cachedGifs
+        isLoading = false
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        gifsView.reloadData()
     }
 
     //MARK: - Actions
@@ -65,35 +77,7 @@ class TrendedGifsViewController: UIViewController {
         selectedRating = newValue
     }
 
-    private func fetch() {
-        let managedContext = CoreDataStack.instance.managedContext
-        let gifModelRequest: NSFetchRequest<GifModelMO> = NSFetchRequest(entityName: "GifModel")
-        do {
-            let result = try managedContext.fetch(gifModelRequest)
-        } catch {
-
-        }
-    }
-
-    private func save(gif: GifModel) {
-        let managedContext = CoreDataStack.instance.managedContext
-
-        let entity = NSEntityDescription.entity(forEntityName: "GifModel",
-                                       in: managedContext)!
-        let gifModel = NSManagedObject(entity: entity,
-                                     insertInto: managedContext)
-        gifModel.setValue(gif.originalURL, forKeyPath: "originalURL")
-        gifModel.setValue(gif.height, forKeyPath: "height")
-        gifModel.setValue(gif.isTrended, forKeyPath: "isTrended")
-        gifModel.setValue(gif.rating, forKeyPath: "rating")
-        do {
-            try managedContext.save()
-        } catch let error as NSError {
-            print("Could not save. \(error), \(error.userInfo)")
-        }
-    }
-
-    private func gifsDidLoad(result: [GifModel]?) {
+    private func gifsDidLoad(result: [GifModelMO]?) {
         guard let data = result else {
             createAlert(title: NSLocalizedString("warningTitle", comment: ""),
                              message: NSLocalizedString("serverError", comment: ""))
@@ -105,7 +89,7 @@ class TrendedGifsViewController: UIViewController {
         } else {
             gifs += data
         }
-        gifsView.reloadData()
+        CoreDataStack.instance.save(data: gifs)
         gifsView.showLoadingView(false)
         isLoading = false
     }
@@ -171,9 +155,7 @@ extension TrendedGifsViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: GifTableViewCell.identifier,
                                                  for: indexPath) as! GifTableViewCell
 
-        save(gif: gifs[indexPath.row])
-
-        cell.gifView.sd_setImage(with: URL(string: gifs[indexPath.row].originalURL), placeholderImage: gifPlaceholder)
+        cell.gifView.sd_setImage(with: URL(string: gifs[indexPath.row].originalURL!), placeholderImage: gifPlaceholder)
         cell.setTrendedMark()
         return cell
     }
