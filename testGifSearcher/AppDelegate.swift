@@ -36,7 +36,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         guard let gif = GiphyService().parseNotificationMessageToGif(json: image) else {
             return
         }
-        (window?.rootViewController! as! UINavigationController).pushViewController(GifViewController(gif: gif), animated: true)
+        guard let navigation = window?.rootViewController! as? UINavigationController else {
+            return
+        }
+        if navigation.viewControllers.count > 1 {
+            navigation.popViewController(animated: false)
+        }
+        navigation.pushViewController(GifViewController(gif: gif), animated: false)
     }
 }
 

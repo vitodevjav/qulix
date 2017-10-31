@@ -104,7 +104,6 @@ class GifsView: UIView {
         let tapRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(backgroundTapped))
 
         addSubview(searchBar)
-        addGestureRecognizer(tapRecognizer)
         addSubview(selectView)
         addSubview(tableView)
         addSubview(activityIndicator)

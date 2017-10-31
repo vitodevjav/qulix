@@ -27,8 +27,6 @@ class GiphyService {
         for data in dataMap {
             guard let images = data["images"] as? [String: Any],
                 let original = images["original"] as? [String: Any],
-//                let preview = images["fixed_height_small"] as? [String: Any],
-//                let previewURL = preview["url"] as? String,
                 let trended = (data["trending_datetime"] as? String)?.isEmpty,
                 let rating = data["rating"] as? String,
                 let originalURL = original["url"] as? String,
