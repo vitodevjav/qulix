@@ -5,7 +5,8 @@ import CoreData
 
 class TrendedGifsViewController: UIViewController {
 
-    private let giphyService = GiphyService()
+    var managedContext: NSManagedObjectContext!
+    var giphyService: GiphyService!
     private let gifPlaceholder = UIImage(named: "ImagePlaceHolder")
     private var isLoading = true
     private let loadingTriggerOffset: CGFloat = 0.0
@@ -60,10 +61,15 @@ class TrendedGifsViewController: UIViewController {
         gifsView.setRefreshControlWith(action: refreshGifs)
         gifsView.setSelectOptions(options: gifRatings)
         gifsView.setSegmentedControlWith(action: ratingDidChange)
-        guard let cachedGifs = CoreDataStack.instance.fetch() else {
+        let request : NSFetchRequest<GifModelMO> = GifModelMO.fetchRequest()
+        guard let cachedGifs = try? managedContext.fetch(request) else {
             loadGifsFromServer()
             return
         }
+        debugPrint(managedContext.insertedObjects.count)
+        debugPrint(managedContext.registeredObjects.count)
+        debugPrint(managedContext.updatedObjects)
+        debugPrint(managedContext.deletedObjects)
         gifs = cachedGifs
         isLoading = false
     }
@@ -84,12 +90,18 @@ class TrendedGifsViewController: UIViewController {
             return
         }
         if isRemovingNeeded {
-            gifs = data
+
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+                    return
+            }
+            appDelegate.coreDataStack.saveContext()
+            guard let registeredGifs = managedContext.registeredObjects as? Set<GifModelMO> else {
+                return
+            }
+            gifs = Array(registeredGifs)
+            gifsView.reloadData()
             isRemovingNeeded = false
-        } else {
-            gifs += data
         }
-        CoreDataStack.instance.save(data: gifs)
         gifsView.showLoadingView(false)
         isLoading = false
     }

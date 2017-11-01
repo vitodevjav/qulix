@@ -4,23 +4,15 @@ import CoreData
 
 class GiphyService {
 
+    private var managedContext: NSManagedObjectContext
     private let keyApi = "oTZ3TChX3NjlHPtzKLCvLIuETVsEpp5q"
     private let gifsCountToReturn = 50
 
-    func parseNotificationMessageToGif(json: [String: Any]) -> GifModelMO? {
-        debugPrint(json)
-        guard let originalURL = json["url"] as? String,
-            let height = json["height"] as? Int,
-            let width = json["width"] as? Int,
-            let rating = json["rating"] as? String,
-            let isTrended = json["isTrended"] as? Bool else {
-                return nil
-        }
-        return CoreDataStack.instance.createGifModelMO(height: height, width: width, rating: rating,
-                                                     originalUrl: originalURL, isTrended: isTrended)
+    init(managedContext: NSManagedObjectContext) {
+        self.managedContext = managedContext
     }
 
-    private func parseJsonToGifArray(_ json: [String: Any]) -> [GifModelMO]? {
+    func parseJsonToGifArray(_ json: [String: Any]) -> [GifModelMO]? {
         guard let dataMap = json["data"] as? [[String: Any]] else {
             return nil
         }
@@ -28,7 +20,7 @@ class GiphyService {
         for data in dataMap {
             guard let images = data["images"] as? [String: Any],
                 let original = images["original"] as? [String: Any],
-                let trended = (data["trending_datetime"] as? String)?.isEmpty,
+                let isTrended = (data["trending_datetime"] as? String)?.isEmpty,
                 let rating = data["rating"] as? String,
                 let originalURL = original["url"] as? String,
                 let stringHeight = original["height"] as? String,
@@ -37,8 +29,17 @@ class GiphyService {
                 let width = Int(stringWidth) else {
                     continue
             }
-            gifArray.append(CoreDataStack.instance.createGifModelMO(height: height, width: width, rating: rating,
-                                                                    originalUrl: originalURL, isTrended: trended))
+            let entity = NSEntityDescription.entity(forEntityName: GifModelMO.entityName, in: managedContext)
+            guard let existingEntity = entity else {
+                continue
+            }
+            let gifModel = NSManagedObject(entity: existingEntity, insertInto: managedContext) as! GifModelMO
+            gifModel.height = Int32(height)
+            gifModel.width = Int32(width)
+            gifModel.originalURL = originalURL
+            gifModel.rating = rating
+            gifModel.isTrended = isTrended
+            gifArray.append(gifModel)
         }
         return gifArray
     }
