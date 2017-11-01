@@ -6,19 +6,12 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     lazy var coreDataStack = CoreDataStack(modelName: "GifSearcherDataModel")
-    lazy var service: GiphyService = {
-        let service = GiphyService()
-        service.managedContext = coreDataStack.managedContext
-        return service
-    }()
+    lazy var service = GiphyService(managedContext: coreDataStack.managedContext)
+
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        if #available(iOS 10.0, *) {
-            UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]){ (granted, error) in }
-        } else {
-            // Fallback on earlier versions
-        }
+        UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]){ (granted, error) in }
         application.registerForRemoteNotifications()
         window = UIWindow(frame: UIScreen.main.bounds)
         let mainController = TrendedGifsViewController()
@@ -48,18 +41,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             navigation.popViewController(animated: false)
         }
         navigation.pushViewController(GifViewController(gif: gif.first!), animated: false)
-    }
-
-    func applicationWillResignActive(_ application: UIApplication) {
-        coreDataStack.saveContext()
-    }
-
-    func applicationWillTerminate(_ application: UIApplication) {
-        coreDataStack.truncate()
-    }
-
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        coreDataStack.saveContext()
     }
 }
 

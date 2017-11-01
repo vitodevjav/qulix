@@ -4,9 +4,13 @@ import CoreData
 
 class GiphyService {
 
-    var managedContext: NSManagedObjectContext!
+    private var managedContext: NSManagedObjectContext
     private let keyApi = "oTZ3TChX3NjlHPtzKLCvLIuETVsEpp5q"
     private let gifsCountToReturn = 50
+
+    init(managedContext: NSManagedObjectContext) {
+        self.managedContext = managedContext
+    }
 
     func parseJsonToGifArray(_ json: [String: Any]) -> [GifModelMO]? {
         guard let dataMap = json["data"] as? [[String: Any]] else {

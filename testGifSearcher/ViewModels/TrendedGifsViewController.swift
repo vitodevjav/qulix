@@ -90,10 +90,17 @@ class TrendedGifsViewController: UIViewController {
             return
         }
         if isRemovingNeeded {
-            gifs = data
+
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+                    return
+            }
+            appDelegate.coreDataStack.saveContext()
+            guard let registeredGifs = managedContext.registeredObjects as? Set<GifModelMO> else {
+                return
+            }
+            gifs = Array(registeredGifs)
+            gifsView.reloadData()
             isRemovingNeeded = false
-        } else {
-            gifs += data
         }
         gifsView.showLoadingView(false)
         isLoading = false
