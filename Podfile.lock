@@ -1,10 +1,10 @@
 PODS:
   - Alamofire (4.5.1)
   - FLAnimatedImage (1.0.12)
-  - SDWebImage (4.2.0):
-    - SDWebImage/Core (= 4.2.0)
-  - SDWebImage/Core (4.2.0)
-  - SDWebImage/GIF (4.2.0):
+  - SDWebImage (4.2.1):
+    - SDWebImage/Core (= 4.2.1)
+  - SDWebImage/Core (4.2.1)
+  - SDWebImage/GIF (4.2.1):
     - FLAnimatedImage (~> 1.0)
     - SDWebImage/Core
 
@@ -17,7 +17,7 @@ DEPENDENCIES:
 SPEC CHECKSUMS:
   Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
-  SDWebImage: b1189fd85365c18434270a11a5cad13a1e848d53
+  SDWebImage: 1fa4c9edf525b744f002db89f3f5a38b3cd4c541
 
 PODFILE CHECKSUM: af051cfb49c3a7cab03a1059082e628d7affd175
 

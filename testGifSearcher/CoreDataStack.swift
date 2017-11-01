@@ -11,15 +11,14 @@ import CoreData
 
 class CoreDataStack {
 
-    static let instance = CoreDataStack()
-    private lazy var managedContext: NSManagedObjectContext = {
+    lazy var managedContext: NSManagedObjectContext = {
         return self.storeContainer.viewContext
     }()
 
-    private let modelName = "GifSearcherDataModel"
+    private let modelName: String
 
-    private init() {
-
+    init(modelName: String) {
+        self.modelName = modelName
     }
     private lazy var storeContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: self.modelName)
@@ -32,17 +31,6 @@ class CoreDataStack {
         return container
     }()
 
-    func createGifModelMO(height: Int, width: Int, rating: String, originalUrl: String, isTrended: Bool) -> GifModelMO {
-        let entity = NSEntityDescription.entity(forEntityName: "GifModel", in: managedContext)!
-        let gifModel = NSManagedObject(entity: entity,insertInto: managedContext) as! GifModelMO
-        gifModel.height = Int32(height)
-        gifModel.width = Int32(width)
-        gifModel.originalURL = originalUrl
-        gifModel.rating = rating
-        gifModel.isTrended = isTrended
-        return gifModel
-    }
-
     func fetch() -> [GifModelMO]? {
         let request = NSFetchRequest<GifModelMO>(entityName: "GifModel")
         do {
@@ -54,22 +42,31 @@ class CoreDataStack {
         }
     }
 
-    func save(data: [GifModelMO]) {
-        for model in data {
-            let request = NSFetchRequest<GifModelMO>(entityName: "GifModel")
-            let res = try? managedContext.fetch(request)
-            request.predicate = NSPredicate(format: "originalURL == %@", model.originalURL!)
-            let count = try! managedContext.count(for: request)
-            guard count == 0 else {
-                continue
+    func saveContext () {
+        guard managedContext.hasChanges else {
+            return
+        }
+        let request = NSFetchRequest<GifModelMO>(entityName: GifModelMO.entityName)
+        debugPrint(managedContext.insertedObjects.count)
+        debugPrint(managedContext.registeredObjects.count)
+        debugPrint(managedContext.updatedObjects)
+        debugPrint(managedContext.deletedObjects)
+        for insertedObject in managedContext.insertedObjects {
+            guard let insertedGif = insertedObject as? GifModelMO,
+                let url = insertedGif.originalURL else {
+                    continue
             }
-            managedContext.insert(model)
+            request.predicate = NSPredicate(format: "%K == %@", url)
         }
         do {
             try managedContext.save()
-        } catch {
-            NSLog("%s", "Error when loading")
+        } catch let error as NSError {
+            print("Unresolved error \(error), \(error.userInfo)")
         }
+        debugPrint(managedContext.insertedObjects.count)
+        debugPrint(managedContext.registeredObjects.count)
+        debugPrint(managedContext.updatedObjects)
+        debugPrint(managedContext.deletedObjects)
     }
 
     func truncate() {
@@ -84,7 +81,7 @@ class CoreDataStack {
             }
             try managedContext.save()
         } catch {
-            NSLog("%s", "Error when fetching")
+            NSLog("%s", "Error")
         }
     }
 }
