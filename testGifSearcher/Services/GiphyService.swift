@@ -12,9 +12,9 @@ class GiphyService {
         self.managedContext = managedContext
     }
 
-    func parseJsonToGifArray(_ json: [String: Any]) -> [GifModelMO]? {
+    func parseJsonToGifArray(_ json: [String: Any]) -> Bool {
         guard let dataMap = json["data"] as? [[String: Any]] else {
-            return nil
+            return false
         }
         var gifArray: [GifModelMO]=[]
         for data in dataMap {
@@ -41,33 +41,31 @@ class GiphyService {
             gifModel.isTrended = isTrended
             gifArray.append(gifModel)
         }
-        return gifArray
+        return true
     }
 
-    public func loadTrendingGifs(offset: Int, rating: String, completion: @escaping ([GifModelMO]?) -> Void) {
+    public func loadTrendingGifs(offset: Int, rating: String, completion: @escaping (Bool) -> Void) {
         let urlString = "https://api.giphy.com/v1/gifs/trending?rating=\(rating)&api_key=\(keyApi)&limit=\(self.gifsCountToReturn)&offset=\(offset)"
 
         Alamofire.request(urlString).responseJSON { response in
             guard let json = response.result.value as? [String: Any] else {
-                completion(nil)
+                completion(false)
                 return
             }
-            let gifArray  = self.parseJsonToGifArray(json)
-            completion(gifArray)
+            completion(self.parseJsonToGifArray(json))
         }
     }
 
-    public func searchGifsByName(_ name: String, offset: Int, rating: String, completion: @escaping ([GifModelMO]?) -> Void) {
+    public func searchGifsByName(_ name: String, offset: Int, rating: String, completion: @escaping (Bool) -> Void) {
         let httpName = name.replacingOccurrences(of: " ", with: "+")
         let urlString = "https://api.giphy.com/v1/gifs/search?q=\(httpName)&rating=\(rating)&api_key=\(keyApi)&limit=\(gifsCountToReturn)&offset=\(offset)"
 
         Alamofire.request(urlString).responseJSON { response in
             guard let json = response.result.value as? [String: Any] else {
-                completion(nil)
+                completion(false)
                 return
             }
-            let gifArray = self.parseJsonToGifArray(json)
-            completion(gifArray)
+            completion( self.parseJsonToGifArray(json))
         }
     }
 }

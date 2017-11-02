@@ -5,7 +5,7 @@ import CoreData
 
 class TrendedGifsViewController: UIViewController {
 
-    var managedContext: NSManagedObjectContext!
+    var managedContext: NSManagedObjectContext
     var giphyService: GiphyService!
     private let gifPlaceholder = UIImage(named: "ImagePlaceHolder")
     private var isLoading = true
@@ -36,6 +36,15 @@ class TrendedGifsViewController: UIViewController {
     }
 
     //MARK: - ViewController lyfecycle
+    init(managedContext: NSManagedObjectContext) {
+        self.managedContext = managedContext
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func loadView() {
         super.loadView()
     }
@@ -66,10 +75,6 @@ class TrendedGifsViewController: UIViewController {
             loadGifsFromServer()
             return
         }
-        debugPrint(managedContext.insertedObjects.count)
-        debugPrint(managedContext.registeredObjects.count)
-        debugPrint(managedContext.updatedObjects)
-        debugPrint(managedContext.deletedObjects)
         gifs = cachedGifs
         isLoading = false
     }
@@ -83,14 +88,8 @@ class TrendedGifsViewController: UIViewController {
         selectedRating = newValue
     }
 
-    private func gifsDidLoad(result: [GifModelMO]?) {
-        guard let data = result else {
-            createAlert(title: NSLocalizedString("warningTitle", comment: ""),
-                             message: NSLocalizedString("serverError", comment: ""))
-            return
-        }
+    private func gifsDidLoad(isDataReceived: Bool) {
         if isRemovingNeeded {
-
             guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
                     return
             }

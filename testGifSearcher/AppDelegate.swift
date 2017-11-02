@@ -14,8 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]){ (granted, error) in }
         application.registerForRemoteNotifications()
         window = UIWindow(frame: UIScreen.main.bounds)
-        let mainController = TrendedGifsViewController()
-        mainController.managedContext = coreDataStack.managedContext
+        let mainController = TrendedGifsViewController(managedContext: coreDataStack.managedContext)
         mainController.giphyService = service
         let navigationController = UINavigationController(rootViewController: mainController)
         window?.rootViewController = navigationController
@@ -29,18 +28,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             token = token + String(format: "%02.2hhx", arguments: [deviceToken[i]])
         }
         debugPrint(token)
-    }
-
-    func application(_ application: UIApplication, didReceiveRemoteNotification data: [AnyHashable : Any]) {
-        guard let json = data as? [String: Any],
-            let gif = service.parseJsonToGifArray(json),
-            let navigation = window?.rootViewController! as? UINavigationController else {
-                return
-        }
-        if navigation.viewControllers.count > 1 {
-            navigation.popViewController(animated: false)
-        }
-        navigation.pushViewController(GifViewController(gif: gif.first!), animated: false)
     }
 }
 
