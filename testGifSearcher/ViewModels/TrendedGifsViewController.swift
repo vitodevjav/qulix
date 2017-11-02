@@ -71,9 +71,10 @@ class TrendedGifsViewController: UIViewController {
         gifsView.setSelectOptions(options: gifRatings)
         gifsView.setSegmentedControlWith(action: ratingDidChange)
         let request : NSFetchRequest<GifModelMO> = GifModelMO.fetchRequest()
-        guard let cachedGifs = try? managedContext.fetch(request) else {
-            loadGifsFromServer()
-            return
+        guard let cachedGifs = try? managedContext.fetch(request),
+            cachedGifs.count == 0 else {
+                loadGifsFromServer()
+                return
         }
         gifs = cachedGifs
         isLoading = false
@@ -89,24 +90,27 @@ class TrendedGifsViewController: UIViewController {
     }
 
     private func gifsDidLoad(isDataReceived: Bool) {
-        if isRemovingNeeded {
-            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-                    return
-            }
-            appDelegate.coreDataStack.saveContext()
-            guard let registeredGifs = managedContext.registeredObjects as? Set<GifModelMO> else {
-                return
-            }
-            gifs = Array(registeredGifs)
-            gifsView.reloadData()
-            isRemovingNeeded = false
+        let request : NSFetchRequest<GifModelMO> = GifModelMO.fetchRequest()
+         guard let cachedGifs = try? managedContext.fetch(request) else {
+            createAlert(title: NSLocalizedString("", comment: ""), message: NSLocalizedString("", comment: ""))
+            return
         }
+        gifs = cachedGifs
+        gifsView.reloadData()
         gifsView.showLoadingView(false)
         isLoading = false
     }
 
     private func refreshGifs() {
-        isRemovingNeeded = true
+        let request : NSFetchRequest<GifModelMO> = GifModelMO.fetchRequest()
+        guard let cachedGifs = try? managedContext.fetch(request) else {
+            self.createAlert(title: NSLocalizedString("", comment: ""), message: NSLocalizedString("", comment: ""))
+            return
+        }
+        for gif in cachedGifs {
+            managedContext.delete(gif)
+        }
+        try? managedContext.save()
         loadGifsFromServer()
     }
 

@@ -40,6 +40,7 @@ class GiphyService {
             gifModel.rating = rating
             gifModel.isTrended = isTrended
             gifArray.append(gifModel)
+            debugPrint(managedContext.insertedObjects.count)
         }
         return true
     }
